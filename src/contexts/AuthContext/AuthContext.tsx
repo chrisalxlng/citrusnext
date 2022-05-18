@@ -3,12 +3,7 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { useCookies } from 'react-cookie';
-import {
-  NotificationTypes,
-  Tokens,
-  useNotification,
-  useTokenRequest,
-} from '@citrus/hooks';
+import { Tokens, useTokenRequest } from '@citrus/hooks';
 
 type AuthProviderProps = {
   children: ReactNode | ReactNode[];
@@ -41,7 +36,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     'user-id',
   ]);
   const { getInstance } = useTokenRequest();
-  const showNotification = useNotification();
 
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -68,39 +62,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (name: string, email: string, password: string) => {
     setLoading(true);
-    const response: AxiosResponse<User> = await axios.post(
-      API_URL + API_USER_ROUTE,
-      {
-        name,
-        email,
-        password,
-      }
-    );
-    const user: User = response.data;
-    if (!!user) {
-      showNotification({
-        type: NotificationTypes.Success,
-        title: 'Successful Registration',
-        message: 'You can now sign in with your registered credentials.',
-      });
-      setLoading(false);
-      router.replace('/sign-in');
-    }
+    const response: AxiosResponse<{
+      user: User;
+      tokens: Tokens;
+    }> = await axios.post(API_URL + API_USER_ROUTE, {
+      name,
+      email,
+      password,
+    });
+    const {
+      user,
+      tokens,
+    }: {
+      user: User;
+      tokens: Tokens;
+    } = response.data;
+    setCookie('access-token', tokens.accessToken);
+    setCookie('refresh-token', tokens.refreshToken);
+    setCookie('user-id', user.id);
+    setCurrentUser(user);
+    setLoading(false);
+    router.push('/app');
   };
 
   const signIn = async (email: string, password: string): Promise<void> => {
     setLoading(true);
-    const response: AxiosResponse = await axios.post(
-      API_URL + API_AUTHENTICATION_ROUTE,
-      null,
-      { params: { email, password } }
-    );
+    const response: AxiosResponse<{
+      userId: string;
+      tokens: Tokens;
+    }> = await axios.post(API_URL + API_AUTHENTICATION_ROUTE, null, {
+      params: { email, password },
+    });
     const {
       userId,
       tokens,
     }: {
       userId: string;
-      tokens: { accessToken: string; refreshToken: string };
+      tokens: Tokens;
     } = response.data;
     setCookie('access-token', tokens.accessToken);
     setCookie('refresh-token', tokens.refreshToken);

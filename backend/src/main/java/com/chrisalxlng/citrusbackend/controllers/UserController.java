@@ -2,8 +2,13 @@ package com.chrisalxlng.citrusbackend.controllers;
 
 import com.chrisalxlng.citrusbackend.models.User;
 import com.chrisalxlng.citrusbackend.services.UserService;
+import com.chrisalxlng.citrusbackend.util.TokenUtil;
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,7 +62,7 @@ public class UserController {
     consumes = { "application/json" },
     produces = { "application/json" }
   )
-  public ResponseEntity<User> createUser(@RequestBody User user) {
+  public ResponseEntity<Map<String, Object>> createUser(HttpServletRequest request, @RequestBody User user) {
     URI uri = URI.create(
       ServletUriComponentsBuilder
         .fromCurrentContextPath()
@@ -70,10 +75,30 @@ public class UserController {
         user.getEmail(),
         user.getPassword()
       );
+
       if (userResponse == null) return new ResponseEntity<>(
         HttpStatus.CONFLICT
       );
-      return ResponseEntity.created(uri).body(userResponse);
+
+      String accessToken = TokenUtil.generateToken(
+        user.getEmail(),
+        new Date(System.currentTimeMillis() + 10 * 60 * 1000),
+        request.getRequestURL().toString()
+      );
+      String refreshToken = TokenUtil.generateToken(
+        user.getEmail(),
+        new Date(System.currentTimeMillis() + 14 * 24 * 60 * 60 * 1000),
+        request.getRequestURL().toString()
+      );
+
+      Map<String, Object> content = new HashMap<>();
+      Map<String, String> tokens = new HashMap<>();
+      tokens.put("accessToken", accessToken);
+      tokens.put("refreshToken", refreshToken);
+      content.put("user", userResponse);
+      content.put("tokens", tokens);
+      
+      return ResponseEntity.created(uri).body(content);
     } catch (Exception exception) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
