@@ -45,7 +45,7 @@ public class WebSecurityConfig
     customAuthenticationFilter.setFilterProcessesUrl("/api/authentication");
     http
       .authorizeRequests()
-      .antMatchers("/api/authentication/**", "/api/token/**", "/api/user/**");
+      .antMatchers("/api/authentication/**", "/api/token/**", "/api/user").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
     http
       .sessionManagement()
