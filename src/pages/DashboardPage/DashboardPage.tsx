@@ -8,7 +8,7 @@ export const DashboardPage = () => {
     <Container p="xl">
       <Group direction="column" spacing="lg" align="center">
         <div>Dashboard</div>
-        <div>Hello, {currentUser?.name}!</div>
+        <div>Hello, {currentUser.name}!</div>
         <Button onClick={signOut}>Sign Out</Button>
       </Group>
     </Container>

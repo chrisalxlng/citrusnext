@@ -3,7 +3,12 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { useCookies } from 'react-cookie';
-import { Tokens, useTokenRequest } from '@citrus/hooks';
+import {
+  NotificationTypes,
+  Tokens,
+  useNotification,
+  useTokenRequest,
+} from '@citrus/hooks';
 
 type AuthProviderProps = {
   children: ReactNode | ReactNode[];
@@ -36,6 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     'user-id',
   ]);
   const { getInstance } = useTokenRequest();
+  const showNotification = useNotification();
 
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -56,57 +62,76 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const fetchedUser: User = response.data;
       return fetchedUser;
     } catch (error) {
+      showNotification({
+        title: 'User Fetch Error',
+        message: 'Something went wrong.',
+        type: NotificationTypes.Error,
+      });
       console.error(error);
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
-    setLoading(true);
-    const response: AxiosResponse<{
-      user: User;
-      tokens: Tokens;
-    }> = await axios.post(API_URL + API_USER_ROUTE, {
-      name,
-      email,
-      password,
-    });
-    const {
-      user,
-      tokens,
-    }: {
-      user: User;
-      tokens: Tokens;
-    } = response.data;
-    setCookie('access-token', tokens.accessToken);
-    setCookie('refresh-token', tokens.refreshToken);
-    setCookie('user-id', user.id);
-    setCurrentUser(user);
-    setLoading(false);
-    router.push('/app');
+    try {
+      setLoading(true);
+      const response: AxiosResponse<{
+        user: User;
+        tokens: Tokens;
+      }> = await axios.post(API_URL + API_USER_ROUTE, {
+        name,
+        email,
+        password,
+      });
+      const {
+        user,
+        tokens,
+      }: {
+        user: User;
+        tokens: Tokens;
+      } = response.data;
+      setCookie('access-token', tokens.accessToken);
+      setCookie('refresh-token', tokens.refreshToken);
+      setCookie('user-id', user.id);
+      setCurrentUser(user);
+    } catch (error) {
+      showNotification({
+        title: 'Register Error',
+        message: 'Something went wrong.',
+        type: NotificationTypes.Error,
+      });
+      console.error(error);
+    }
   };
 
   const signIn = async (email: string, password: string): Promise<void> => {
-    setLoading(true);
-    const response: AxiosResponse<{
-      userId: string;
-      tokens: Tokens;
-    }> = await axios.post(API_URL + API_AUTHENTICATION_ROUTE, null, {
-      params: { email, password },
-    });
-    const {
-      userId,
-      tokens,
-    }: {
-      userId: string;
-      tokens: Tokens;
-    } = response.data;
-    setCookie('access-token', tokens.accessToken);
-    setCookie('refresh-token', tokens.refreshToken);
-    setCookie('user-id', userId);
-    const user: User = await fetchUser(userId, tokens);
-    setCurrentUser(user);
-    setLoading(false);
-    router.push('/app');
+    try {
+      setLoading(true);
+      const response: AxiosResponse<{
+        userId: string;
+        tokens: Tokens;
+      }> = await axios.post(API_URL + API_AUTHENTICATION_ROUTE, null, {
+        params: { email, password },
+      });
+      const {
+        userId,
+        tokens,
+      }: {
+        userId: string;
+        tokens: Tokens;
+      } = response.data;
+      setCookie('access-token', tokens.accessToken);
+      setCookie('refresh-token', tokens.refreshToken);
+      setCookie('user-id', userId);
+      const user: User = await fetchUser(userId, tokens);
+      setCurrentUser(user);
+    } catch (error) {
+      showNotification({
+        title: 'Sign-In Error',
+        message: 'Something went wrong.',
+        type: NotificationTypes.Error,
+      });
+      console.error(error);
+    }
   };
 
   const updateUser = async (name: string) => {
@@ -115,9 +140,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     setLoading(true);
-    setCurrentUser(null);
     removeCookies();
-    setLoading(false);
+    setCurrentUser(null);
   };
 
   useEffect(() => {
@@ -128,14 +152,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const refetchUser = async () => {
       const user: User = await fetchUser(userId, { accessToken, refreshToken });
       setCurrentUser(user);
-      setLoading(false);
-      router.replace('/app');
     };
 
     if (!currentUser && userId && accessToken && refreshToken) {
       refetchUser();
-    } else setLoading(false);
+    } else {
+      removeCookies();
+      setCurrentUser(null);
+    }
   }, []);
+
+  useEffect(() => {
+    const stopLoading = async () => {
+      await router.push('/');
+      setLoading(false);
+    };
+    stopLoading();
+  }, [currentUser]);
 
   const value: AuthProviderValue = useMemo(
     () => ({
