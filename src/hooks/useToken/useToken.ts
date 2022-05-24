@@ -22,8 +22,8 @@ export const useTokenRequest = () => {
         }
       );
       const data: Tokens = response.data;
-      setCookie('access-token', data.accessToken);
-      setCookie('refresh-token', data.refreshToken);
+      setCookie('access-token', data.accessToken, { path: '/' });
+      setCookie('refresh-token', data.refreshToken, { path: '/' });
       return data;
     } catch (error) {
       console.error(error);

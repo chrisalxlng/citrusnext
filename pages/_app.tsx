@@ -10,7 +10,8 @@ import {
 } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { AuthProvider } from '@citrus/contexts';
-import { FullWidthHeightLoader } from '@citrus/core';
+import { Favicon, FullWidthHeightLoader } from '@citrus/core';
+import { CookiesProvider } from 'react-cookie';
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
@@ -39,7 +40,7 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <link rel="shortcut icon" href="/favicon.svg" />
+        <Favicon />
       </Head>
 
       <ColorSchemeProvider
@@ -49,7 +50,7 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
         <MantineProvider
           theme={{
             colorScheme,
-            primaryColor: 'orange',
+            primaryColor: 'yellow',
           }}
           withGlobalStyles
           withNormalizeCSS
@@ -58,9 +59,11 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
             {loading ? (
               <FullWidthHeightLoader />
             ) : (
-              <AuthProvider>
-                <Component {...pageProps} />
-              </AuthProvider>
+              <CookiesProvider>
+                <AuthProvider>
+                  <Component {...pageProps} />
+                </AuthProvider>
+              </CookiesProvider>
             )}
           </NotificationsProvider>
         </MantineProvider>

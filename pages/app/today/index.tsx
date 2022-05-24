@@ -1,9 +1,10 @@
 import { AuthStates, Redirect } from '@citrus/core';
+import { TodayPage } from '@citrus/pages';
 
-export default function Dashboard() {
+export default function Today() {
   return (
     <Redirect to="/sign-in" when={AuthStates.Unauthenticatd}>
-      <Redirect to="/app/today" when={AuthStates.Authenticated} />
+      <TodayPage />
     </Redirect>
   );
 }

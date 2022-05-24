@@ -1,6 +1,9 @@
+import { ColorSchemeToggle } from '@citrus/core';
 import { useAuth } from '@citrus/hooks';
+import { LogoIcon, LogoVariants } from '@citrus/icons';
 import {
   Anchor,
+  Box,
   Button,
   Center,
   Container,
@@ -10,6 +13,7 @@ import {
   Space,
   Text,
   TextInput,
+  UnstyledButton,
 } from '@mantine/core';
 import { upperFirst, useFocusTrap, useForm } from '@mantine/hooks';
 import { useRouter } from 'next/router';
@@ -44,102 +48,107 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
   return (
     <Center
       ref={focusTrapRef}
-      sx={(styles) => ({
+      sx={(theme) => ({
         height: '100vh',
-        backgroundColor: styles.colors.gray[0],
+        position: 'relative',
+        backgroundColor:
+          theme.colorScheme === 'dark'
+            ? theme.colors.gray[9]
+            : theme.colors.gray[0],
       })}
     >
-      <Container size={450} p="xl">
-        <Paper radius="md" p="xl" shadow="md" withBorder>
-          <Text size="lg" weight={500} align="center">
-            {upperFirst(pageState)}
-          </Text>
-          <Space h={3} />
-          <Text color="dimmed" size="sm" align="center">
-            {pageState === PageState.register
-              ? 'Get started with citrus.'
-              : 'Continue right where you left off.'}
-          </Text>
+      <Box sx={{ position: 'absolute', top: 20, right: 20 }}>
+        <ColorSchemeToggle />
+      </Box>
+      <Group direction="column" align="center" spacing={0}>
+        <UnstyledButton onClick={() => router.push('/')}>
+          <LogoIcon variant={LogoVariants.WithTitle} size={36} />
+        </UnstyledButton>
 
-          <Space my="xl" />
+        <Container size={450} p="xl">
+          <Paper radius="md" p="xl" shadow="md" withBorder>
+            <Text size="lg" weight={500} align="center">
+              {upperFirst(pageState)}
+            </Text>
+            <Space h={3} />
+            <Text color="dimmed" size="sm" align="center">
+              {pageState === PageState.register
+                ? 'Get started with citrus.'
+                : 'Continue right where you left off.'}
+            </Text>
 
-          <form onSubmit={form.onSubmit(() => {})}>
-            <Group direction="column" grow>
-              {pageState === PageState.register && (
+            <Space my="xl" />
+
+            <form
+              onSubmit={form.onSubmit((values) =>
+                pageState === PageState.register
+                  ? register(values.name, values.email, values.password)
+                  : signIn(values.email, values.password)
+              )}
+            >
+              <Group direction="column" grow>
+                {pageState === PageState.register && (
+                  <TextInput
+                    data-autofocus
+                    required
+                    label="Name"
+                    placeholder="John"
+                    value={form.values.name}
+                    onChange={(event) =>
+                      form.setFieldValue('name', event.currentTarget.value)
+                    }
+                  />
+                )}
+
                 <TextInput
                   data-autofocus
                   required
-                  label="Name"
-                  placeholder="Your name"
-                  value={form.values.name}
+                  label="Email"
+                  placeholder="john.doe@mail.com"
+                  value={form.values.email}
                   onChange={(event) =>
-                    form.setFieldValue('name', event.currentTarget.value)
+                    form.setFieldValue('email', event.currentTarget.value)
+                  }
+                  error={form.errors.email && 'Invalid email'}
+                />
+
+                <PasswordInput
+                  required
+                  label="Password"
+                  placeholder="Your password"
+                  value={form.values.password}
+                  onChange={(event) =>
+                    form.setFieldValue('password', event.currentTarget.value)
+                  }
+                  error={
+                    form.errors.password &&
+                    'Password should include at least 8 characters'
                   }
                 />
-              )}
+              </Group>
 
-              <TextInput
-                data-autofocus
-                required
-                label="Email"
-                placeholder="hello@mantine.dev"
-                value={form.values.email}
-                onChange={(event) =>
-                  form.setFieldValue('email', event.currentTarget.value)
-                }
-                error={form.errors.email && 'Invalid email'}
-              />
-
-              <PasswordInput
-                required
-                label="Password"
-                placeholder="Your password"
-                value={form.values.password}
-                onChange={(event) =>
-                  form.setFieldValue('password', event.currentTarget.value)
-                }
-                error={
-                  form.errors.password &&
-                  'Password should include at least 8 characters'
-                }
-              />
-            </Group>
-
-            <Group position="apart" mt="xl" spacing={50}>
-              <Anchor
-                component="button"
-                type="button"
-                color="gray"
-                onClick={() =>
-                  pageState === PageState.register
-                    ? router.replace('/sign-in')
-                    : router.replace('/register')
-                }
-                size="xs"
-              >
-                {pageState === PageState.register
-                  ? 'Already have an account? Sign In'
-                  : "Don't have an account? Register"}
-              </Anchor>
-              <Button
-                type="submit"
-                onClick={
-                  pageState === PageState.register
-                    ? () =>
-                        register(
-                          form.values.name,
-                          form.values.email,
-                          form.values.password
-                        )
-                    : () => signIn(form.values.email, form.values.password)
-                }
-              >
-                {upperFirst(pageState)}
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      </Container>
+              <Group position="apart" mt="xl" spacing={50}>
+                <Anchor
+                  component="button"
+                  type="button"
+                  color="gray"
+                  onClick={() =>
+                    pageState === PageState.register
+                      ? router.replace('/sign-in')
+                      : router.replace('/register')
+                  }
+                  size="xs"
+                >
+                  {pageState === PageState.register
+                    ? 'Already have an account? Sign In'
+                    : "Don't have an account? Register"}
+                </Anchor>
+                <Button type="submit">{upperFirst(pageState)}</Button>
+              </Group>
+            </form>
+          </Paper>
+        </Container>
+      </Group>
     </Center>
   );
 };

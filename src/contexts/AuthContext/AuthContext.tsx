@@ -1,6 +1,5 @@
 import { FullWidthHeightLoader } from '@citrus/core';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { useCookies } from 'react-cookie';
 import {
@@ -24,7 +23,8 @@ type AuthProviderValue = {
   currentUser: User;
   register: (name: string, email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
-  updateUser: (name: string) => Promise<void>;
+  updateUser: (name: string, email: string) => Promise<void>;
+  deleteUser: () => Promise<void>;
   signOut: () => void;
 };
 
@@ -34,7 +34,6 @@ const API_AUTHENTICATION_ROUTE =
 const API_USER_ROUTE = process.env.NEXT_PUBLIC_API_USER_ROUTE;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies([
     'access-token',
     'refresh-token',
@@ -46,10 +45,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const getCookies = (): Tokens & { userId: string } => ({
+    accessToken: String(cookies['access-token']),
+    refreshToken: String(cookies['refresh-token']),
+    userId: String(cookies['user-id']),
+  });
+
+  const setCookies = (cookies: Tokens & { userId: string }): void => {
+    setCookie('access-token', cookies.accessToken, { path: '/' });
+    setCookie('refresh-token', cookies.refreshToken, { path: '/' });
+    setCookie('user-id', cookies.userId, { path: '/' });
+  };
+
   const removeCookies = () => {
-    removeCookie('access-token');
-    removeCookie('refresh-token');
-    removeCookie('user-id');
+    removeCookie('access-token', { path: '/' });
+    removeCookie('refresh-token', { path: '/' });
+    removeCookie('user-id', { path: '/' });
   };
 
   const fetchUser = async (userId: string, tokens: Tokens): Promise<User> => {
@@ -89,9 +100,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         user: User;
         tokens: Tokens;
       } = response.data;
-      setCookie('access-token', tokens.accessToken);
-      setCookie('refresh-token', tokens.refreshToken);
-      setCookie('user-id', user.id);
+      const { accessToken, refreshToken } = tokens;
+      setCookies({ accessToken, refreshToken, userId: user.id });
       setCurrentUser(user);
     } catch (error) {
       showNotification({
@@ -100,6 +110,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         type: NotificationTypes.Error,
       });
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -119,9 +130,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         userId: string;
         tokens: Tokens;
       } = response.data;
-      setCookie('access-token', tokens.accessToken);
-      setCookie('refresh-token', tokens.refreshToken);
-      setCookie('user-id', userId);
+      const { accessToken, refreshToken } = tokens;
+      setCookies({ accessToken, refreshToken, userId });
       const user: User = await fetchUser(userId, tokens);
       setCurrentUser(user);
     } catch (error) {
@@ -131,20 +141,78 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         type: NotificationTypes.Error,
       });
       console.error(error);
+      setLoading(false);
     }
   };
 
-  const updateUser = async (name: string) => {
-    return null;
+  const updateUser = async (name: string, email: string) => {
+    const { accessToken, refreshToken, userId } = getCookies();
+    const instance: AxiosInstance = await getInstance({
+      accessToken,
+      refreshToken,
+    });
+
+    try {
+      const response: AxiosResponse = await instance.put(
+        `${API_URL}${API_USER_ROUTE}/${userId}`,
+        {
+          name,
+          email,
+        }
+      );
+      const updatedUser: User = response.data;
+      setCurrentUser(updatedUser);
+      showNotification({
+        message: 'User updated successfully',
+        type: NotificationTypes.Success,
+      });
+    } catch (error) {
+      showNotification({
+        title: 'User Update Error',
+        message: 'Something went wrong.',
+        type: NotificationTypes.Error,
+      });
+      console.error(error);
+    }
   };
 
-  const signOut = async () => {
+  const deleteUser = async () => {
+    const { accessToken, refreshToken, userId } = getCookies();
+    const instance: AxiosInstance = await getInstance({
+      accessToken,
+      refreshToken,
+    });
+
+    try {
+      await instance.delete(`${API_URL}${API_USER_ROUTE}/${userId}`);
+      signOut();
+      showNotification({
+        message: 'User deleted successfully',
+        type: NotificationTypes.Success,
+      });
+    } catch (error) {
+      showNotification({
+        title: 'User Deletion Error',
+        message: 'Something went wrong.',
+        type: NotificationTypes.Error,
+      });
+      console.error(error);
+    }
+  };
+
+  const signOut = () => {
     setLoading(true);
     removeCookies();
     setCurrentUser(null);
+    setLoading(false);
   };
 
   useEffect(() => {
+    if (!!currentUser) {
+      setLoading(false);
+      return;
+    }
+
     const userId: string = cookies['user-id'];
     const accessToken: string = cookies['access-token'];
     const refreshToken: string = cookies['refresh-token'];
@@ -152,22 +220,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const refetchUser = async () => {
       const user: User = await fetchUser(userId, { accessToken, refreshToken });
       setCurrentUser(user);
-    };
-
-    if (!currentUser && userId && accessToken && refreshToken) {
-      refetchUser();
-    } else {
-      removeCookies();
-      setCurrentUser(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    const stopLoading = async () => {
-      await router.push('/');
       setLoading(false);
     };
-    stopLoading();
+
+    if (userId && accessToken && refreshToken) {
+      refetchUser();
+    } else signOut();
   }, [currentUser]);
 
   const value: AuthProviderValue = useMemo(
@@ -176,6 +234,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       register,
       signIn,
       updateUser,
+      deleteUser,
       signOut,
     }),
     [currentUser]

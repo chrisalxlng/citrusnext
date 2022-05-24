@@ -1,0 +1,19 @@
+{
+    "name": "citrus",
+    "short_name": "citrus",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png?v=citrus",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png?v=citrus",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffe066",
+    "background_color": "#ffe066",
+    "display": "standalone"
+}

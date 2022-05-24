@@ -80,13 +80,15 @@ public class UserController {
         HttpStatus.CONFLICT
       );
 
+      String userId = userService.getUserByEmail(user.getEmail()).getId();
+
       String accessToken = TokenUtil.generateToken(
-        user.getEmail(),
+        userId,
         new Date(System.currentTimeMillis() + 10 * 60 * 1000),
         request.getRequestURL().toString()
       );
       String refreshToken = TokenUtil.generateToken(
-        user.getEmail(),
+        userId,
         new Date(System.currentTimeMillis() + 14 * 24 * 60 * 60 * 1000),
         request.getRequestURL().toString()
       );
@@ -124,8 +126,7 @@ public class UserController {
       User userResponse = userService.updateUser(
         id,
         user.getName(),
-        user.getEmail(),
-        user.getPassword()
+        user.getEmail()
       );
       if (userResponse == null) return new ResponseEntity<>(
         HttpStatus.NOT_FOUND

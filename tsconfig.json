@@ -16,6 +16,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@citrus/core": ["src/components"],
       "@citrus/*": ["src/*"]
     }
   },

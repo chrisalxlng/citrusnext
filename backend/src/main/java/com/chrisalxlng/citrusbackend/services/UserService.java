@@ -92,8 +92,7 @@ public class UserService implements UserDetailsService {
   public User updateUser(
     String id,
     String name,
-    String email,
-    String password
+    String email
   ) {
     Optional<User> userEntry = userRepository.findUserById(id);
 
@@ -101,7 +100,6 @@ public class UserService implements UserDetailsService {
       User user = userEntry.get();
       user.setName(name);
       user.setEmail(email);
-      user.setPassword(password);
       userRepository.save(user);
       log.info("User " + user.getEmail() + " updated");
       return user;
