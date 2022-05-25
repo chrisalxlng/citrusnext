@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "get_started": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next dev",
+    "get_started_prod": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next build",
     "dev": "next dev",
     "serve_db": "cd backend; docker-compose up",
     "serve_backend": "cd backend; mvn spring-boot:run",
