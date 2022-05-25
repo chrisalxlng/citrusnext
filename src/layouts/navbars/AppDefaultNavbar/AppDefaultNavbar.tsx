@@ -67,10 +67,8 @@ export const AppDefaultNavbar = ({
                 {...link}
                 key={link.label}
                 active={activePath === link?.href}
-                onClick={
-                  link?.onClick ??
-                  (async () => await router.push(`/app${link.href}`))
-                }
+                onClick={link?.onClick}
+                href={link?.href && `/app${link.href}`}
                 largerThanBreakpoint={largerThanBreakpoint}
                 setNavbarOpened={setNavbarOpened}
               />
@@ -86,10 +84,8 @@ export const AppDefaultNavbar = ({
                 {...link}
                 key={link.label}
                 active={activePath === link?.href}
-                onClick={
-                  link?.onClick ??
-                  (async () => await router.push(`/app${link.href}`))
-                }
+                onClick={link?.onClick}
+                href={link?.href && `/app${link.href}`}
                 largerThanBreakpoint={largerThanBreakpoint}
                 setNavbarOpened={setNavbarOpened}
               />

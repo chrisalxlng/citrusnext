@@ -2,12 +2,14 @@ import { Text, UnstyledButton } from '@mantine/core';
 import { Tooltip } from '@citrus/core';
 import { Dispatch, SetStateAction } from 'react';
 import { Icon } from 'tabler-icons-react';
+import Link from 'next/link';
 
 type NavbarLinkProps = {
   icon: Icon;
   label: string;
   active?: boolean;
-  onClick: () => void;
+  href?: string;
+  onClick?: () => void;
   largerThanBreakpoint: boolean;
   setNavbarOpened: Dispatch<SetStateAction<boolean>>;
 };
@@ -16,6 +18,7 @@ export const NavbarLink = ({
   icon: Icon,
   label,
   active = false,
+  href = null,
   onClick,
   largerThanBreakpoint,
   setNavbarOpened,
@@ -104,5 +107,17 @@ export const NavbarLink = ({
     </UnstyledButton>
   );
 
-  return largerThanBreakpoint ? desktopButton : mobileButton;
+  if (href) {
+    return largerThanBreakpoint ? (
+      <Link href={href}>
+        <div>{desktopButton}</div>
+      </Link>
+    ) : (
+      <Link href={href}>
+        <div>{mobileButton}</div>
+      </Link>
+    );
+  } else {
+    return largerThanBreakpoint ? desktopButton : mobileButton;
+  }
 };
