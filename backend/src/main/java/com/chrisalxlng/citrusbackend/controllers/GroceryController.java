@@ -74,10 +74,10 @@ public class GroceryController {
     try {
       Grocery groceryResponse = groceryService.createGrocery(
         grocery.getTitle(),
+        grocery.getIconId(),
         grocery.getUnit(),
         grocery.getPortionSize(),
-        grocery.isIncludeInDishes(),
-        grocery.getNutritionInformation(),
+        grocery.getMacroNutrientsPer100(),
         grocery.getUserId()
       );
       if (groceryResponse == null) return new ResponseEntity<>(
@@ -109,10 +109,10 @@ public class GroceryController {
       Grocery groceryResponse = groceryService.updateGrocery(
         id,
         grocery.getTitle(),
+        grocery.getIconId(),
         grocery.getUnit(),
         grocery.getPortionSize(),
-        grocery.isIncludeInDishes(),
-        grocery.getNutritionInformation(),
+        grocery.getMacroNutrientsPer100(),
         grocery.getUserId()
       );
       if (groceryResponse == null) return new ResponseEntity<>(
