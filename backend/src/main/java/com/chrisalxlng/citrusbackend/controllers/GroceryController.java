@@ -127,13 +127,13 @@ public class GroceryController {
 
   @DeleteMapping(value = "/grocery/{id}")
   @PreAuthorize("@authenticationService.hasAccessToGrocery(#id)")
-  public ResponseEntity<HttpStatus> deleteGrocery(
+  public ResponseEntity<Grocery> deleteGrocery(
     @PathVariable @NonNull String id
   ) {
     try {
       Grocery grocery = groceryService.deleteGrocery(id);
       if (grocery == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return ResponseEntity.ok().body(grocery);
     } catch (Exception exception) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
