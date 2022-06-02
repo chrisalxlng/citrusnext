@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "get_started": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next dev",
-    "get_started_prod": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next build",
-    "dev": "next dev",
+    "dev": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next dev",
+    "prod": "cd backend; docker-compose up -d; mvn spring-boot:start; cd ..; next build; next start",
+    "serve_dev_frontend": "next dev",
     "serve_db": "cd backend; docker-compose up",
     "serve_backend": "cd backend; mvn spring-boot:run",
     "build": "next build",
@@ -37,6 +37,7 @@
     "react-dom": "17.0.2",
     "react-jwt": "^1.1.6",
     "react-query": "^3.39.0",
+    "react-window": "^1.8.7",
     "tabler-icons-react": "^1.39.0"
   },
   "devDependencies": {
@@ -44,6 +45,7 @@
     "@next/eslint-plugin-next": "^12.1.0",
     "@types/node": "^17.0.21",
     "@types/react": "17.0.40",
+    "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "eslint": "^8.11.0",

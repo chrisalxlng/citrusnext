@@ -59,7 +59,11 @@ export const AppDefaultNavbar = ({
       width={largerThanBreakpoint ? { base: 80 } : { base: '100%' }}
     >
       <Navbar.Section grow>
-        <Group direction="column" align="center" spacing={0}>
+        <Group
+          direction="column"
+          align="center"
+          spacing={largerThanBreakpoint ? 0 : 'xs'}
+        >
           {items
             .filter((item) => item.isMain)
             .map((link) => (
@@ -76,7 +80,11 @@ export const AppDefaultNavbar = ({
         </Group>
       </Navbar.Section>
       <Navbar.Section>
-        <Group direction="column" align="center" spacing={0}>
+        <Group
+          direction="column"
+          align="center"
+          spacing={largerThanBreakpoint ? 0 : 'xs'}
+        >
           {items
             .filter((item) => !item.isMain)
             .map((link) => (

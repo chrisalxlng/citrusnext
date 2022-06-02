@@ -53,7 +53,7 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
         position: 'relative',
         backgroundColor:
           theme.colorScheme === 'dark'
-            ? theme.colors.gray[9]
+            ? theme.colors.dark[8]
             : theme.colors.gray[0],
       })}
     >

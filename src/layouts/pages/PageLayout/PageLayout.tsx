@@ -2,9 +2,10 @@ import { HEADER_HEIGHT } from '@citrus/constants';
 import { FooterLayout } from '@citrus/layouts';
 import { AppDefaultNavbar } from '@citrus/layouts';
 import { AppDefaultHeader } from '@citrus/layouts';
-import { AppShell, Box, Group } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { AppShell, Box, Group, useMantineColorScheme } from '@mantine/core';
+import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
 
 type PageLayoutProps = {
@@ -12,6 +13,9 @@ type PageLayoutProps = {
   title?: string;
   header?: JSX.Element;
   navbar?: JSX.Element;
+  noHeader?: boolean;
+  noNavbar?: boolean;
+  noFooter?: boolean;
 };
 
 export const PageLayout = ({
@@ -19,10 +23,17 @@ export const PageLayout = ({
   title = null,
   header = null,
   navbar = null,
+  noHeader = false,
+  noNavbar = false,
+  noFooter = false,
 }: PageLayoutProps) => {
   const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
   const [navbarOpened, setNavbarOpened] = useState<boolean>(false);
+  const { toggleColorScheme } = useMantineColorScheme();
+  const router = useRouter();
   const titleTemplate = `${title} • citrus`;
+
+  useHotkeys([['mod+.', () => toggleColorScheme()]]);
 
   const defaultHeader = (
     <AppDefaultHeader
@@ -48,11 +59,10 @@ export const PageLayout = ({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        {/* <Favicon /> */}
       </Head>
       <AppShell
-        header={header ?? defaultHeader}
-        navbar={navbar ?? defaultNavbar}
+        header={header ?? (!noHeader && defaultHeader)}
+        navbar={navbar ?? (!noNavbar && defaultNavbar)}
         padding={0}
       >
         {((!largerThanBreakpoint && !navbarOpened) || largerThanBreakpoint) && (
@@ -67,12 +77,12 @@ export const PageLayout = ({
               overflowX: 'hidden',
               backgroundColor:
                 theme.colorScheme === 'dark'
-                  ? theme.colors.gray[9]
+                  ? theme.colors.dark[8]
                   : theme.colors.gray[0],
             })}
           >
             <Box p={largerThanBreakpoint ? 30 : 20}>{children}</Box>
-            <FooterLayout />
+            {!noFooter && <FooterLayout />}
           </Group>
         )}
       </AppShell>

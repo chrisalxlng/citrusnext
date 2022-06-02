@@ -1,0 +1,9 @@
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const TOKEN_ROUTE = '/token';
+export const AUTHENTICATION_ROUTE = '/authentication';
+export const USER_ROUTE = '/user';
+export const GROCERIES_ROUTE = '/groceries';
+export const GROCERY_ROUTE = '/grocery';
+export const DISHES_ROUTE = '/dishes';
+export const DISH_ROUTE = '/dish';
+export const DIARY_ROUTE = '/diary';

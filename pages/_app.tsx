@@ -1,7 +1,5 @@
-import { GetServerSidePropsContext } from 'next';
 import { useEffect, useState } from 'react';
 import { AppProps } from 'next/app';
-import { getCookie, setCookies } from 'cookies-next';
 import Head from 'next/head';
 import {
   MantineProvider,
@@ -11,15 +9,17 @@ import {
 import { NotificationsProvider } from '@mantine/notifications';
 import { AuthProvider } from '@citrus/contexts';
 import { Favicon, FullWidthHeightLoader } from '@citrus/core';
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider, useCookies } from 'react-cookie';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-export default function App(props: AppProps & { colorScheme: ColorScheme }) {
-  const { Component, pageProps } = props;
+export default function App({ Component, pageProps }: AppProps) {
+  const [cookies, setCookie] = useCookies(['mantine-color-scheme']);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
-    props.colorScheme
+    cookies['mantine-color-scheme']
   );
+  const queryClient = new QueryClient();
 
   useEffect(() => setLoading(false), []);
 
@@ -27,8 +27,8 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
     const nextColorScheme =
       value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme);
-    setCookies('mantine-color-scheme', nextColorScheme, {
-      maxAge: 60 * 60 * 24 * 30,
+    setCookie('mantine-color-scheme', nextColorScheme, {
+      path: '/',
     });
   };
 
@@ -61,7 +61,9 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
             ) : (
               <CookiesProvider>
                 <AuthProvider>
-                  <Component {...pageProps} />
+                  <QueryClientProvider client={queryClient}>
+                    <Component {...pageProps} />
+                  </QueryClientProvider>
                 </AuthProvider>
               </CookiesProvider>
             )}
@@ -71,7 +73,3 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
     </>
   );
 }
-
-App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
-  colorScheme: getCookie('mantine-color-scheme', ctx) || 'light',
-});

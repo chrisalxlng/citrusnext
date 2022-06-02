@@ -1,28 +1,38 @@
 import { HEADER_HEIGHT } from '@citrus/constants';
 import { Tooltip } from '@citrus/core';
-import { ActionIcon, Button, Group, Header, Text } from '@mantine/core';
+import { ActionIcon, Group, Header, Text } from '@mantine/core';
+import { useHotkeys } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { X } from 'tabler-icons-react';
 
 type AppCloseHeaderProps = {
   title?: string;
+  submitButton?: JSX.Element;
 };
 
-export const AppCloseHeader = ({ title = null }: AppCloseHeaderProps) => {
+export const AppCloseHeader = ({
+  title = null,
+  submitButton = null,
+}: AppCloseHeaderProps) => {
   const router = useRouter();
+  useHotkeys([['Escape', () => router.back()]]);
 
   return (
     <Header height={HEADER_HEIGHT} px="md">
-      <Group position="apart" sx={{ height: '100%' }}>
-        <Group>
+      <Group position="apart" noWrap sx={{ height: '100%' }}>
+        <Group noWrap>
           <Tooltip label="Close" withArrow>
             <ActionIcon size="lg" onClick={router.back}>
               <X />
             </ActionIcon>
           </Tooltip>
-          {title && <Text weight={500}>{title}</Text>}
+          {title && (
+            <Text weight={500} lineClamp={1}>
+              {title}
+            </Text>
+          )}
         </Group>
-        <Button>Save</Button>
+        {submitButton}
       </Group>
     </Header>
   );

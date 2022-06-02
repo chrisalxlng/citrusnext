@@ -1,14 +1,7 @@
-import { ConfirmModal } from '@citrus/core';
+import { Card, ConfirmModal } from '@citrus/core';
 import { useAuth, useModal } from '@citrus/hooks';
 import { PageLayout } from '@citrus/layouts';
-import {
-  Button,
-  Container,
-  Group,
-  Paper,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { Button, Container, Group, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 
 export const AccountPage = () => {
@@ -44,7 +37,11 @@ export const AccountPage = () => {
             spacing="xl"
             sx={{ width: '100%' }}
           >
-            <Group direction="column" sx={{ flex: '1 1', minWidth: 230 }}>
+            <Group
+              direction="column"
+              sx={{ flex: '1 1', minWidth: 230 }}
+              py="md"
+            >
               <Text weight={500} size="lg">
                 Your Profile
               </Text>
@@ -54,13 +51,7 @@ export const AccountPage = () => {
                 used to sign into citrus.
               </Text>
             </Group>
-            <Paper
-              radius="md"
-              p="xl"
-              shadow="md"
-              withBorder
-              sx={{ flex: '1 1', minWidth: 230 }}
-            >
+            <Card p="xl" sx={{ flex: '1 1', minWidth: 230 }}>
               <form
                 onSubmit={form.onSubmit((values) =>
                   updateUser(values.name, values.email)
@@ -95,7 +86,7 @@ export const AccountPage = () => {
                   </Button>
                 </Group>
               </form>
-            </Paper>
+            </Card>
           </Group>
 
           <Group
@@ -105,7 +96,11 @@ export const AccountPage = () => {
             spacing="xl"
             sx={{ width: '100%' }}
           >
-            <Group direction="column" sx={{ flex: '1 1', minWidth: 230 }}>
+            <Group
+              direction="column"
+              sx={{ flex: '1 1', minWidth: 230 }}
+              py="md"
+            >
               <Text weight={500} size="lg">
                 Your Account
               </Text>
@@ -113,13 +108,7 @@ export const AccountPage = () => {
                 Manage your citrus account.
               </Text>
             </Group>
-            <Paper
-              radius="md"
-              p="xl"
-              shadow="md"
-              withBorder
-              sx={{ flex: '1 1', minWidth: 230 }}
-            >
+            <Card p="xl" sx={{ flex: '1 1', minWidth: 230 }}>
               <Group direction="column">
                 <Text size="sm">
                   Deleting your account is permanent and irreversible.
@@ -128,7 +117,7 @@ export const AccountPage = () => {
                   Delete account
                 </Button>
               </Group>
-            </Paper>
+            </Card>
           </Group>
         </Group>
       </Container>

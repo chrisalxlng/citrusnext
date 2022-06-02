@@ -1,3 +1,4 @@
+import { API_URL, TOKEN_ROUTE } from '@citrus/constants';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { useCookies } from 'react-cookie';
 import { isExpired } from 'react-jwt';
@@ -7,16 +8,13 @@ export type Tokens = {
   refreshToken: string;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_TOKEN_ROUTE = process.env.NEXT_PUBLIC_API_TOKEN_ROUTE;
-
 export const useTokenRequest = () => {
   const [cookies, setCookie] = useCookies(['access-token', 'refresh-token']);
 
   const refreshTokens = async (refreshToken: string): Promise<Tokens> => {
     try {
       const response: AxiosResponse<Tokens> = await axios.get(
-        API_URL + API_TOKEN_ROUTE,
+        API_URL + TOKEN_ROUTE,
         {
           headers: { Authorization: 'Bearer ' + refreshToken },
         }
@@ -32,7 +30,7 @@ export const useTokenRequest = () => {
 
   const getInstance = async (tokens?: Tokens) => {
     const refreshToken: string =
-      tokens.refreshToken ?? cookies['refresh-token'];
+      cookies['refresh-token'] ?? tokens?.refreshToken;
 
     if (!refreshToken) {
       console.error('No refresh token in storage.');
@@ -45,7 +43,7 @@ export const useTokenRequest = () => {
     }
 
     try {
-      let accessToken: string = tokens.accessToken ?? cookies['access-token'];
+      let accessToken: string = cookies['access-token'] ?? tokens?.accessToken;
 
       if (!accessToken || isExpired(accessToken)) {
         accessToken = (await refreshTokens(refreshToken)).accessToken;

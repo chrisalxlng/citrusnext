@@ -8,6 +8,7 @@ import {
   useNotification,
   useTokenRequest,
 } from '@citrus/hooks';
+import { API_URL, AUTHENTICATION_ROUTE, USER_ROUTE } from '@citrus/constants';
 
 type AuthProviderProps = {
   children: ReactNode | ReactNode[];
@@ -27,11 +28,6 @@ type AuthProviderValue = {
   deleteUser: () => Promise<void>;
   signOut: () => void;
 };
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_AUTHENTICATION_ROUTE =
-  process.env.NEXT_PUBLIC_API_AUTHENTICATION_ROUTE;
-const API_USER_ROUTE = process.env.NEXT_PUBLIC_API_USER_ROUTE;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [cookies, setCookie, removeCookie] = useCookies([
@@ -68,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const response: AxiosResponse = await instance.get(
-        `${API_URL}${API_USER_ROUTE}/${userId}`
+        `${API_URL}${USER_ROUTE}/${userId}`
       );
       const fetchedUser: User = response.data;
       return fetchedUser;
@@ -88,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response: AxiosResponse<{
         user: User;
         tokens: Tokens;
-      }> = await axios.post(API_URL + API_USER_ROUTE, {
+      }> = await axios.post(API_URL + USER_ROUTE, {
         name,
         email,
         password,
@@ -120,7 +116,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response: AxiosResponse<{
         userId: string;
         tokens: Tokens;
-      }> = await axios.post(API_URL + API_AUTHENTICATION_ROUTE, null, {
+      }> = await axios.post(API_URL + AUTHENTICATION_ROUTE, null, {
         params: { email, password },
       });
       const {
@@ -154,7 +150,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const response: AxiosResponse = await instance.put(
-        `${API_URL}${API_USER_ROUTE}/${userId}`,
+        `${API_URL}${USER_ROUTE}/${userId}`,
         {
           name,
           email,
@@ -184,7 +180,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     try {
-      await instance.delete(`${API_URL}${API_USER_ROUTE}/${userId}`);
+      await instance.delete(`${API_URL}${USER_ROUTE}/${userId}`);
       signOut();
       showNotification({
         message: 'User deleted successfully',
