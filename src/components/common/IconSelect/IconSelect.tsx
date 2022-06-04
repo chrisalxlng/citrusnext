@@ -32,7 +32,7 @@ type Item<Value> = { icon: ReactNode; value: Value };
 
 type IconSelectProps<Value extends ValueType> = {
   required?: boolean;
-  label?: string;
+  label: string;
   variant?: InputVariant;
   data: Item<Value>[];
   value: Value;
@@ -49,7 +49,7 @@ type RowProps = {
 };
 
 export const IconSelect = <Value extends ValueType>({
-  label = 'Icon',
+  label,
   variant = 'default',
   data,
   value,

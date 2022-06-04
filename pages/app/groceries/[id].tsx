@@ -1,3 +1,4 @@
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { AuthStates, FullWidthHeightLoader, Redirect } from '@citrus/core';
 import { useGrocery } from '@citrus/hooks';
 import { GroceryPage } from '@citrus/pages';
@@ -20,3 +21,11 @@ export default function EditGrocery() {
     </Redirect>
   );
 }
+
+export const getServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
+};

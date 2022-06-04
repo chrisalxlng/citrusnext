@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import {
   MantineProvider,
   ColorScheme,
   ColorSchemeProvider,
+  Box,
 } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { AuthProvider } from '@citrus/contexts';
@@ -12,7 +14,7 @@ import { Favicon, FullWidthHeightLoader } from '@citrus/core';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   const [cookies, setCookie] = useCookies(['mantine-color-scheme']);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +64,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <CookiesProvider>
                 <AuthProvider>
                   <QueryClientProvider client={queryClient}>
-                    <Component {...pageProps} />
+                    <Box sx={{ whiteSpace: 'pre-line' }}>
+                      <Component {...pageProps} />
+                    </Box>
                   </QueryClientProvider>
                 </AuthProvider>
               </CookiesProvider>
@@ -72,4 +76,6 @@ export default function App({ Component, pageProps }: AppProps) {
       </ColorSchemeProvider>
     </>
   );
-}
+};
+
+export default appWithTranslation(App);

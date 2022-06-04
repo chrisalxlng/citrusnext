@@ -1,5 +1,12 @@
 import { PageLayout } from '@citrus/layouts';
+import { useTranslation } from 'next-i18next';
 
 export const TodayPage = () => {
-  return <PageLayout title="Today">Today</PageLayout>;
+  const { t } = useTranslation('common');
+
+  return (
+    <PageLayout title={t('pages.today.title')}>
+      {t('pages.today.title')}
+    </PageLayout>
+  );
 };

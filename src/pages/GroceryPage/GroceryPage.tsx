@@ -13,6 +13,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useFocusTrap, useForm } from '@mantine/hooks';
+import { useTranslation } from 'next-i18next';
 import { Trash } from 'tabler-icons-react';
 import { createArray } from '../GroceriesPage/GroceriesPage';
 
@@ -25,6 +26,7 @@ type GroceryPageProps = {
 };
 
 export const GroceryPage = ({ grocery }: GroceryPageProps) => {
+  const { t } = useTranslation('common');
   const isCreatePage: boolean = !grocery;
 
   const title: string = isCreatePage ? 'New Grocery' : 'Update Grocery';
@@ -75,7 +77,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 options={
                   !isCreatePage && [
                     {
-                      label: 'Delete Grocery',
+                      label: t('pages.grocery.actions.delete'),
                       color: 'red',
                       icon: <Trash size={14} />,
                       onClick: () => remove.mutate(grocery.id),
@@ -84,7 +86,9 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 }
                 type="submit"
               >
-                {isCreatePage ? 'Add Grocery' : 'Update Grocery'}
+                {isCreatePage
+                  ? t('pages.grocery.actions.add')
+                  : t('pages.grocery.actions.update')}
               </SplitButton>
             }
           />
@@ -106,13 +110,10 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 sx={{ flex: '1 1', minWidth: 230 }}
               >
                 <Text weight={500} size="lg">
-                  General Information
+                  {t('pages.grocery.helper.general.title')}
                 </Text>
                 <Text color="dimmed" size="sm">
-                  Please provide general information about the grocery you want
-                  to add. <br />
-                  The default portion size is the amount of grams or mililiters
-                  you usually consume the grocery (e.g. 1 Banana = 120 g).
+                  {t('pages.grocery.helper.general.text')}
                 </Text>
               </Group>
               <Card p="xl" sx={{ flex: '1 1', minWidth: 305 }}>
@@ -120,9 +121,9 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                   <TextInput
                     data-autofocus
                     required
-                    label="Title"
+                    label={t('pages.grocery.form.title.label')}
                     variant="filled"
-                    placeholder="Orange"
+                    placeholder={t('pages.grocery.form.title.placeholder')}
                     value={form.values.title}
                     onChange={(event) =>
                       form.setFieldValue('title', event.currentTarget.value)
@@ -131,6 +132,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                   />
                   <IconSelect<number>
                     required
+                    label={t('pages.grocery.form.icon.label')}
                     variant="filled"
                     data={createArray(163).map((index) => ({
                       icon: <FoodIcon id={index + 1} size={24} />,
@@ -144,7 +146,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 <Group align="flex-end" noWrap>
                   <NumberInput
                     required
-                    label="Portion Size"
+                    label={t('pages.grocery.form.potion_size.label')}
                     variant="filled"
                     value={form.values.portionSize}
                     onBlur={(event) =>
@@ -160,7 +162,10 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                     stepHoldInterval={(t) => Math.max(1000 / t ** 2, 2.5)}
                     sx={{ width: '100%' }}
                   />
-                  <InputWrapper label="Unit" required>
+                  <InputWrapper
+                    label={t('pages.grocery.form.unit.label')}
+                    required
+                  >
                     <SegmentedControl
                       value={form.values.unit}
                       onChange={(value) =>
@@ -170,8 +175,8 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                         )
                       }
                       data={[
-                        { label: 'Grams', value: 'g' },
-                        { label: 'Mililiters', value: 'ml' },
+                        { label: t('common.units.g'), value: 'g' },
+                        { label: t('common.units.ml'), value: 'ml' },
                       ]}
                       sx={{ overflow: 'visible' }}
                       styles={{
@@ -198,21 +203,17 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 sx={{ flex: '1 1', minWidth: 230 }}
               >
                 <Text weight={500} size="lg">
-                  Macronutrients
+                  {t('pages.grocery.helper.macros.title')}
                 </Text>
                 <Text color="dimmed" size="sm">
-                  Macronutrients consist of carbohydrates, fats and proteins.{' '}
-                  <br />
-                  Please provide these macronutrients per 100 g/ml. Based on
-                  these specifications the associated calorie value will be
-                  calculated.
+                  {t('pages.grocery.helper.macros.text')}
                 </Text>
               </Group>
               <Card p="xl" sx={{ flex: '1 1', minWidth: 305 }}>
                 <Group align="flex-end" noWrap>
                   <NumberInput
                     required
-                    label="Carbohydrates"
+                    label={t('pages.grocery.form.carbs.label')}
                     variant="filled"
                     value={form.values.macroNutrientsPer100.carbohydrates}
                     onBlur={(event) =>
@@ -231,7 +232,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                   />
                   <NumberInput
                     required
-                    label="Fats"
+                    label={t('pages.grocery.form.fats.label')}
                     variant="filled"
                     value={form.values.macroNutrientsPer100.fats}
                     onBlur={(event) =>
@@ -253,7 +254,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                 <Group align="flex-end" noWrap>
                   <NumberInput
                     required
-                    label="Proteins"
+                    label={t('pages.grocery.form.proteins.label')}
                     variant="filled"
                     value={form.values.macroNutrientsPer100.proteins}
                     onBlur={(event) =>
@@ -272,7 +273,7 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
                   />
                   <NumberInput
                     disabled
-                    label="Calories"
+                    label={t('pages.grocery.form.calories.label')}
                     variant="filled"
                     value={
                       ((form.values.macroNutrientsPer100.carbohydrates *

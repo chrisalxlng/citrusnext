@@ -3,9 +3,10 @@ import { useAuth, useModal } from '@citrus/hooks';
 import { PageLayout } from '@citrus/layouts';
 import { Button, Container, Group, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
+import { useTranslation } from 'next-i18next';
 
 export const AccountPage = () => {
-  const title = 'Account';
+  const { t } = useTranslation('common');
   const { currentUser, updateUser, deleteUser } = useAuth();
   const [modal, openModal] = useModal();
   const form = useForm({
@@ -20,11 +21,11 @@ export const AccountPage = () => {
   });
 
   return (
-    <PageLayout title={title}>
+    <PageLayout title={t('pages.account.title')}>
       <ConfirmModal
         modal={modal}
-        title="Are you absolutely sure?"
-        text="You will be signed out and your account will be deleted permanently."
+        title={t('pages.account.confirm_modal.title')}
+        text={t('pages.account.confirm_modal.text')}
         confirmText={currentUser?.name}
         action={deleteUser}
       />
@@ -43,12 +44,10 @@ export const AccountPage = () => {
               py="md"
             >
               <Text weight={500} size="lg">
-                Your Profile
+                {t('pages.account.helper.profile.title')}
               </Text>
               <Text color="dimmed" size="sm">
-                Your name will only be exposed to yourself. <br />
-                Your email address serves as the primary contact option and is
-                used to sign into citrus.
+                {t('pages.account.helper.profile.text')}
               </Text>
             </Group>
             <Card p="xl" sx={{ flex: '1 1', minWidth: 230 }}>
@@ -61,8 +60,8 @@ export const AccountPage = () => {
                   <TextInput
                     required
                     variant="filled"
-                    label="Name"
-                    placeholder="John"
+                    label={t('common.form.inputs.name.label')}
+                    placeholder={t('common.form.inputs.name.placeholder')}
                     value={form.values.name}
                     onChange={(event) =>
                       form.setFieldValue('name', event.currentTarget.value)
@@ -72,17 +71,19 @@ export const AccountPage = () => {
                   <TextInput
                     required
                     variant="filled"
-                    label="Email"
-                    placeholder="john.doe@mail.com"
+                    label={t('common.form.inputs.email.label')}
+                    placeholder={t('common.form.inputs.email.placeholder')}
                     value={form.values.email}
                     onChange={(event) =>
                       form.setFieldValue('email', event.currentTarget.value)
                     }
-                    error={form.errors.email && 'Invalid email'}
+                    error={
+                      form.errors.email && t('common.form.errors.invalid_email')
+                    }
                     sx={{ width: '100%' }}
                   />
                   <Button mt="sm" type="submit">
-                    Save
+                    {t('common.actions.save')}
                   </Button>
                 </Group>
               </form>
@@ -102,19 +103,19 @@ export const AccountPage = () => {
               py="md"
             >
               <Text weight={500} size="lg">
-                Your Account
+                {t('pages.account.helper.account.title')}
               </Text>
               <Text color="dimmed" size="sm">
-                Manage your citrus account.
+                {t('pages.account.helper.account.text')}
               </Text>
             </Group>
             <Card p="xl" sx={{ flex: '1 1', minWidth: 230 }}>
               <Group direction="column">
                 <Text size="sm">
-                  Deleting your account is permanent and irreversible.
+                  {t('pages.account.helper.account.card_text')}
                 </Text>
                 <Button mt="sm" color="red" variant="light" onClick={openModal}>
-                  Delete account
+                  {t('pages.account.actions.delete')}
                 </Button>
               </Group>
             </Card>

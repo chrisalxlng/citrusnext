@@ -1,17 +1,19 @@
 import { CardGroup, GroceryCard } from '@citrus/core';
 import { useGrocery } from '@citrus/hooks';
 import { EntityPageLayout } from '@citrus/layouts';
+import { useTranslation } from 'next-i18next';
 
 export const createArray = (count: number) => Array.from(Array(count).keys());
 
 export const GroceriesPage = () => {
+  const { t } = useTranslation('common');
   const { groceries } = useGrocery();
   const { count, data, isLoading } = groceries;
 
   return (
     <EntityPageLayout
-      title="Groceries"
-      button={{ label: 'New Grocery', href: '/app/groceries/new' }}
+      title={t('pages.groceries.title')}
+      button={{ label: t('pages.groceries.new'), href: '/app/groceries/new' }}
     >
       {isLoading ? (
         <CardGroup cardMinWidth={270}>

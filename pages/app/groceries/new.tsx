@@ -1,3 +1,4 @@
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { AuthStates, Redirect } from '@citrus/core';
 import { GroceryPage } from '@citrus/pages';
 
@@ -8,3 +9,11 @@ export default function NewGrocery() {
     </Redirect>
   );
 }
+
+export const getStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
+};

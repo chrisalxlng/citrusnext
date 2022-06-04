@@ -9,6 +9,7 @@ import {
   useTokenRequest,
 } from '@citrus/hooks';
 import { API_URL, AUTHENTICATION_ROUTE, USER_ROUTE } from '@citrus/constants';
+import { useTranslation } from 'next-i18next';
 
 type AuthProviderProps = {
   children: ReactNode | ReactNode[];
@@ -30,6 +31,7 @@ type AuthProviderValue = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { t } = useTranslation();
   const [cookies, setCookie, removeCookie] = useCookies([
     'access-token',
     'refresh-token',
@@ -70,8 +72,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return fetchedUser;
     } catch (error) {
       showNotification({
-        title: 'User Fetch Error',
-        message: 'Something went wrong.',
+        title: t('notifications.error.user_fetch.title'),
+        message: t('notifications.error.user_fetch.message'),
         type: NotificationTypes.Error,
       });
       console.error(error);
@@ -101,8 +103,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
     } catch (error) {
       showNotification({
-        title: 'Register Error',
-        message: 'Something went wrong.',
+        title: t('notifications.error.register.title'),
+        message: t('notifications.error.register.message'),
         type: NotificationTypes.Error,
       });
       console.error(error);
@@ -132,8 +134,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
     } catch (error) {
       showNotification({
-        title: 'Sign-In Error',
-        message: 'Something went wrong.',
+        title: t('notifications.error.sign_in.title'),
+        message: t('notifications.error.sign_in.message'),
         type: NotificationTypes.Error,
       });
       console.error(error);
@@ -159,13 +161,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const updatedUser: User = response.data;
       setCurrentUser(updatedUser);
       showNotification({
-        message: 'User updated successfully',
+        message: t('notifications.success.user_update.message'),
         type: NotificationTypes.Success,
       });
     } catch (error) {
       showNotification({
-        title: 'User Update Error',
-        message: 'Something went wrong.',
+        title: t('notifications.error.user_update.title'),
+        message: t('notifications.error.user_update.message'),
         type: NotificationTypes.Error,
       });
       console.error(error);
@@ -183,13 +185,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await instance.delete(`${API_URL}${USER_ROUTE}/${userId}`);
       signOut();
       showNotification({
-        message: 'User deleted successfully',
+        message: t('notifications.success.user_deletion.message'),
         type: NotificationTypes.Success,
       });
     } catch (error) {
       showNotification({
-        title: 'User Deletion Error',
-        message: 'Something went wrong.',
+        title: t('notifications.error.user_deletion.title'),
+        message: t('notifications.error.user_deletion.message'),
         type: NotificationTypes.Error,
       });
       console.error(error);

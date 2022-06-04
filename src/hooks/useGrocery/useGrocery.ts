@@ -12,6 +12,7 @@ import {
 import { useNotification, useTokenRequest } from '@citrus/hooks';
 import { NotificationTypes } from '../useNotification/useNotification';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 export enum Unit {
   Grams = 'g',
@@ -72,6 +73,7 @@ type Grocery = {
 };
 
 export const useGrocery = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { getInstance } = useTokenRequest();
   const [cookies, setCookie] = useCookies(['grocery-count']);
@@ -112,16 +114,20 @@ export const useGrocery = () => {
           );
           setCount(count + 1);
           showNotification({
-            title: 'Grocery added',
-            message: `${addedGrocery.title} was added succesfully.`,
+            title: t('notifications.success.grocery_addition.title'),
+            message: t('notifications.success.grocery_addition.message', {
+              grocery: addedGrocery.title,
+            }),
             type: NotificationTypes.Success,
           });
           router.push('/app/groceries');
         },
         onError: (grocery: Grocery) => {
           showNotification({
-            title: 'Grocery Error',
-            message: `${grocery.title} could not be added.`,
+            title: t('notifications.error.grocery_addition.title'),
+            message: t('notifications.error.grocery_addition.message', {
+              grocery: grocery.title,
+            }),
             type: NotificationTypes.Error,
           });
         },
@@ -145,16 +151,20 @@ export const useGrocery = () => {
           )
         );
         showNotification({
-          title: 'Grocery updated',
-          message: `${updatedGrocery.title} was updated succesfully.`,
+          title: t('notifications.success.grocery_update.title'),
+          message: t('notifications.success.grocery_update.message', {
+            grocery: updatedGrocery.title,
+          }),
           type: NotificationTypes.Success,
         });
         router.push('/app/groceries');
       },
       onError: (grocery: Grocery) => {
         showNotification({
-          title: 'Grocery Error',
-          message: `${grocery.title} could not be updated.`,
+          title: t('notifications.error.grocery_update.title'),
+          message: t('notifications.error.grocery_update.message', {
+            grocery: grocery.title,
+          }),
           type: NotificationTypes.Error,
         });
       },
@@ -178,16 +188,20 @@ export const useGrocery = () => {
         );
         setCount(count - 1);
         showNotification({
-          title: 'Grocery deleted',
-          message: `${grocery.title} was deleted succesfully.`,
+          title: t('notifications.success.grocery_deletion.title'),
+          message: t('notifications.success.grocery_deletion.message', {
+            grocery: grocery.title,
+          }),
           type: NotificationTypes.Success,
         });
         router.push('/app/groceries');
       },
       onError: (grocery: Grocery) => {
         showNotification({
-          title: 'Grocery Error',
-          message: `${grocery.title} could not be deleted.`,
+          title: t('notifications.error.grocery_deletion.title'),
+          message: t('notifications.error.grocery_deletion.message', {
+            grocery: grocery.title,
+          }),
           type: NotificationTypes.Error,
         });
       },

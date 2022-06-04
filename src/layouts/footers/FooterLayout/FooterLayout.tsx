@@ -1,7 +1,9 @@
 import { Box, Divider, Group, Kbd, Text } from '@mantine/core';
 import { OS, useOs } from '@mantine/hooks';
+import { useTranslation } from 'next-i18next';
 
 export const FooterLayout = () => {
+  const { t } = useTranslation();
   const os: OS = useOs();
   const currentYear = new Date().getFullYear();
 
@@ -17,7 +19,7 @@ export const FooterLayout = () => {
             .
           </Kbd>
         </Group>
-        <Text size="xs">Change Color Scheme</Text>
+        <Text size="xs">{t('footer.actions.change_color_scheme')}</Text>
       </Group>
     </Group>
   );

@@ -1,0 +1,212 @@
+{
+  "common": {
+    "actions": {
+      "save": "Save",
+      "sign_out": "Sign Out"
+    },
+    "form": {
+      "inputs": {
+        "name": {
+          "label": "Name",
+          "placeholder": "John"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "john.doe@mail.com"
+        }
+      },
+      "errors": {
+        "invalid_email": "Invalid email",
+        "password_length": "Password should include at least 8 characters"
+      }
+    },
+    "units": {
+      "amount": {
+        "kcal": "{{amount}} kcal",
+        "g": "{{amount}} g",
+        "ml": "{{amount}} ml"
+      },
+      "g": "Grams",
+      "ml": "Mililiters"
+    },
+    "macro_tags": {
+      "high_carb": "High Carb",
+      "low_carb": "Low Carb",
+      "high_fat": "High Fat",
+      "low_fat": "Low Fat",
+      "high_protein": "High Protein",
+      "low_protein": "Low Protein",
+      "balanced": "Balanced Macros"
+    }
+  },
+  "pages": {
+    "authentication": {
+      "login": {
+        "title": "Sign in",
+        "card_title": "Continue right where you left off.",
+        "link": "Already have an account? Sign In"
+      },
+      "register": {
+        "title": "Register",
+        "card_title": "Get started with citrus.",
+        "link": "Don't have an account? Register"
+      },
+      "form": {
+        "password": {
+          "label": "Password",
+          "placeholder": "Your password"
+        }
+      }
+    },
+    "account": {
+      "title": "Account",
+      "helper": {
+        "profile": {
+          "title": "Your Profile",
+          "text": "Your name will only be exposed to yourself.\nYour email address serves as the primary contact option and is used to sign into citrus."
+        },
+        "account": {
+          "title": "Your Account",
+          "text": "Manage your citrus account.",
+          "card_text": "Deleting your account is permanent and irreversible."
+        }
+      },
+      "actions": {
+        "delete": "Delete Account"
+      },
+      "confirm_modal": {
+        "title": "Are you absolutely sure?",
+        "text": "You will be signed out and your account will be deleted permanently."
+      }
+    },
+    "today": {
+      "title": "Today"
+    },
+    "dishes": {
+      "title": "Dishes"
+    },
+    "groceries": {
+      "title": "Groceries",
+      "new": "New Grocery"
+    },
+    "grocery": {
+      "title": {
+        "new": "New Grocery",
+        "update": "Update Grocery"
+      },
+      "actions": {
+        "add": "Add Grocery",
+        "update": "Update Grocery",
+        "delete": "Delete Grocery"
+      },
+      "helper": {
+        "general": {
+          "title": "General Information",
+          "text": "Please provide general information about the grocery you want to add.\nThe default portion size is the amount of grams or mililiters you usually consume the grocery (e.g. 1 Banana = 120 g)."
+        },
+        "macros": {
+          "title": "Macronutrients",
+          "text": "Macronutrients consist of carbohydrates, fats and proteins.\nPlease provide these macronutrients per 100 g/ml. Based on these specifications the associated calorie value will be calculated."
+        }
+      },
+      "form": {
+        "title": {
+          "label": "Title",
+          "placeholder": "Orange"
+        },
+        "icon": {
+          "label": "Icon"
+        },
+        "potion_size": {
+          "label": "Portion Size"
+        },
+        "unit": {
+          "label": "Unit"
+        },
+        "carbs": {
+          "label": "Carbohydrates"
+        },
+        "fats": {
+          "label": "Fats"
+        },
+        "proteins": {
+          "label": "Proteins"
+        },
+        "calories": {
+          "label": "Calories"
+        }
+      }
+    }
+  },
+  "footer": {
+    "actions": {
+      "change_color_scheme": "Change Color Scheme"
+    }
+  },
+  "modals": {
+    "confirm": {
+      "confirm_text": "Please type <0>{{text}}</0> to confirm."
+    }
+  },
+  "tooltip": {
+    "light_mode": "Light Mode",
+    "dark_mode": "Dark Mode",
+    "close": "Close"
+  },
+  "notifications": {
+    "error": {
+      "user_fetch": {
+        "title": "User Fetch Error",
+        "message": "Something went wrong."
+      },
+      "register": {
+        "title": "Register Error",
+        "message": "Something went wrong."
+      },
+      "sign_in": {
+        "title": "Sign-In Error",
+        "message": "Something went wrong."
+      },
+      "user_update": {
+        "title": "User Update Error",
+        "message": "Something went wrong."
+      },
+      "user_deletion": {
+        "title": "User Deletion Error",
+        "message": "Something went wrong."
+      },
+      "grocery_addition": {
+        "title": "Grocery Addition Error",
+        "message": "{{grocery}} could not be added."
+      },
+      "grocery_update": {
+        "title": "Grocery Update Error",
+        "message": "{{grocery}} could not be updated."
+      },
+      "grocery_deletion": {
+        "title": "Grocery Deletion Error",
+        "message": "{{grocery}} could not be deleted."
+      }
+    },
+    "success": {
+      "user_update": {
+        "message": "User updated successfully."
+      },
+      "user_deletion": {
+        "message": "User deleted successfully."
+      },
+      "grocery_addition": {
+        "title": "Grocery added",
+        "message": "{{grocery}} was added succesfully."
+      },
+      "grocery_update": {
+        "title": "Grocery updated",
+        "message": "{{grocery}} was updated successfully."
+      },
+      "grocery_deletion": {
+        "title": "Grocery deleted",
+        "message": "{{grocery}} was deleted successfully."
+      }
+    }
+  }
+}

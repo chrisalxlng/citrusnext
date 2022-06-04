@@ -1,6 +1,7 @@
 import { NavbarLink } from '@citrus/core';
 import { useAuth } from '@citrus/hooks';
 import { Group, Navbar } from '@mantine/core';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import {
@@ -31,20 +32,41 @@ export const AppDefaultNavbar = ({
   largerThanBreakpoint,
   setNavbarOpened,
 }: AppDefaultNavbarProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { signOut } = useAuth();
 
   const items: NavItem[] = [
-    { isMain: true, icon: Calendar, label: 'Today', href: '/today' },
-    { isMain: true, icon: Grill, label: 'Dishes', href: '/dishes' },
-    { isMain: true, icon: PaperBag, label: 'Groceries', href: '/groceries' },
+    {
+      isMain: true,
+      icon: Calendar,
+      label: t('pages.today.title'),
+      href: '/today',
+    },
+    {
+      isMain: true,
+      icon: Grill,
+      label: t('pages.dishes.title'),
+      href: '/dishes',
+    },
+    {
+      isMain: true,
+      icon: PaperBag,
+      label: t('pages.groceries.title'),
+      href: '/groceries',
+    },
     {
       isMain: false,
       icon: UserCircle,
-      label: 'Account',
+      label: t('pages.account.title'),
       href: '/account',
     },
-    { isMain: false, icon: Logout, label: 'Sign Out', onClick: signOut },
+    {
+      isMain: false,
+      icon: Logout,
+      label: t('common.actions.sign_out'),
+      onClick: signOut,
+    },
   ];
 
   const pathname: string = router.pathname.replace('/app', '');

@@ -2,7 +2,6 @@ import { Card, MacroNutrientBadge } from '@citrus/core';
 import { MacroNutrientTag, Unit } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
 import {
-  Center,
   Group,
   Skeleton,
   Space,
@@ -11,6 +10,7 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core';
+import { useTranslation } from 'next-i18next';
 import { BrandTinder, ScaleOutline } from 'tabler-icons-react';
 
 interface LoadingGroceryCardProps {
@@ -36,6 +36,7 @@ type GroceryCardProps = LoadingGroceryCardProps | LoadedGroceryCardProps;
 const MAX_MACRO_NUTRIENT_BADGES = 3;
 
 export const GroceryCard = ({ isLoading, data }: GroceryCardProps) => {
+  const { t } = useTranslation('common');
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
 
@@ -53,7 +54,7 @@ export const GroceryCard = ({ isLoading, data }: GroceryCardProps) => {
 
   const cardContent: JSX.Element = !isLoading && (
     <>
-      <Group align="center" noWrap>
+      <Group align="center" noWrap sx={{ overflow: 'hidden' }}>
         <ThemeIcon p={4} color="blue" variant="light" size="xl" radius="md">
           <FoodIcon id={data.iconId} size={24} />
         </ThemeIcon>
@@ -61,8 +62,8 @@ export const GroceryCard = ({ isLoading, data }: GroceryCardProps) => {
           <Text size="sm" weight={500} lineClamp={1}>
             {data.title}
           </Text>
-          <Group>
-            <Group spacing={3}>
+          <Group noWrap>
+            <Group spacing={3} noWrap>
               <BrandTinder
                 size={12}
                 color={
@@ -81,10 +82,12 @@ export const GroceryCard = ({ isLoading, data }: GroceryCardProps) => {
                 }
                 weight={500}
               >
-                {getFormattedNumber(data.calories)} kcal
+                {t('common.units.amount.kcal', {
+                  amount: getFormattedNumber(data.calories),
+                })}
               </Text>
             </Group>
-            <Group spacing={3}>
+            <Group spacing={3} noWrap>
               <ScaleOutline
                 size={12}
                 color={
@@ -103,7 +106,9 @@ export const GroceryCard = ({ isLoading, data }: GroceryCardProps) => {
                 }
                 weight={500}
               >
-                {`${getFormattedNumber(data.portionSize)} ${data.unit}`}
+                {t(`common.units.amount.${data.unit}`, {
+                  amount: getFormattedNumber(data.portionSize),
+                })}
               </Text>
             </Group>
           </Group>

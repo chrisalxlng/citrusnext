@@ -16,6 +16,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { upperFirst, useFocusTrap, useForm } from '@mantine/hooks';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 export enum PageState {
@@ -28,6 +29,7 @@ type AuthenticationPageProps = {
 };
 
 export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const focusTrapRef = useFocusTrap();
   const { register, signIn } = useAuth();
@@ -68,13 +70,15 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
         <Container size={450} p="xl">
           <Paper radius="md" p="xl" shadow="md" withBorder>
             <Text size="lg" weight={500} align="center">
-              {upperFirst(pageState)}
+              {pageState === PageState.register
+                ? t('pages.authentication.register.title')
+                : t('pages.authentication.login.title')}
             </Text>
             <Space h={3} />
             <Text color="dimmed" size="sm" align="center">
               {pageState === PageState.register
-                ? 'Get started with citrus.'
-                : 'Continue right where you left off.'}
+                ? t('pages.authentication.register.card_title')
+                : t('pages.authentication.login.card_title')}
             </Text>
 
             <Space my="xl" />
@@ -91,8 +95,8 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
                   <TextInput
                     data-autofocus
                     required
-                    label="Name"
-                    placeholder="John"
+                    label={t('common.form.inputs.name.label')}
+                    placeholder={t('common.form.inputs.name.placeholder')}
                     value={form.values.name}
                     onChange={(event) =>
                       form.setFieldValue('name', event.currentTarget.value)
@@ -103,26 +107,30 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
                 <TextInput
                   data-autofocus
                   required
-                  label="Email"
-                  placeholder="john.doe@mail.com"
+                  label={t('common.form.inputs.email.label')}
+                  placeholder={t('common.form.inputs.email.placeholder')}
                   value={form.values.email}
                   onChange={(event) =>
                     form.setFieldValue('email', event.currentTarget.value)
                   }
-                  error={form.errors.email && 'Invalid email'}
+                  error={
+                    form.errors.email && t('common.form.errors.invalid_email')
+                  }
                 />
 
                 <PasswordInput
                   required
-                  label="Password"
-                  placeholder="Your password"
+                  label={t('pages.authentication.form.password.label')}
+                  placeholder={t(
+                    'pages.authentication.form.password.placeholder'
+                  )}
                   value={form.values.password}
                   onChange={(event) =>
                     form.setFieldValue('password', event.currentTarget.value)
                   }
                   error={
                     form.errors.password &&
-                    'Password should include at least 8 characters'
+                    t('common.form.errors.password_length')
                   }
                 />
               </Group>
@@ -140,8 +148,8 @@ export const AuthenticationPage = ({ pageState }: AuthenticationPageProps) => {
                   size="xs"
                 >
                   {pageState === PageState.register
-                    ? 'Already have an account? Sign In'
-                    : "Don't have an account? Register"}
+                    ? t('pages.authentication.login.link')
+                    : t('pages.authentication.register.link')}
                 </Anchor>
                 <Button type="submit">{upperFirst(pageState)}</Button>
               </Group>

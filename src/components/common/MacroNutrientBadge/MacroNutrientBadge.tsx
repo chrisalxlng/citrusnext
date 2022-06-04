@@ -1,39 +1,42 @@
 import { MacroNutrientTag } from '@citrus/hooks';
 import { Badge } from '@mantine/core';
+import { useTranslation } from 'next-i18next';
 
 type MacroNutrientBadgeProps = {
   tag: MacroNutrientTag;
 };
 
 export const MacroNutrientBadge = ({ tag }: MacroNutrientBadgeProps) => {
+  const { t } = useTranslation('common');
+
   const tags = {
     [MacroNutrientTag.HIGH_CARBOHYDRATE]: {
       color: 'lime',
-      title: 'High Carb',
+      title: t('common.macro_tags.high_carb'),
     },
     [MacroNutrientTag.LOW_CARBOHYDRATE]: {
       color: 'lime',
-      title: 'Low Carb',
+      title: t('common.macro_tags.low_carb'),
     },
     [MacroNutrientTag.HIGH_FAT]: {
       color: 'cyan',
-      title: 'High Fat',
+      title: t('common.macro_tags.high_fat'),
     },
     [MacroNutrientTag.LOW_FAT]: {
       color: 'cyan',
-      title: 'Low Fat',
+      title: t('common.macro_tags.low_fat'),
     },
     [MacroNutrientTag.HIGH_PROTEIN]: {
       color: 'grape',
-      title: 'High Protein',
+      title: t('common.macro_tags.high_protein'),
     },
     [MacroNutrientTag.LOW_PROTEIN]: {
       color: 'grape',
-      title: 'Low Protein',
+      title: t('common.macro_tags.low_protein'),
     },
     [MacroNutrientTag.BALANCED_MACROS]: {
       color: 'gray',
-      title: 'Balanced Macros',
+      title: t('common.macro_tags.balanced'),
     },
   };
 

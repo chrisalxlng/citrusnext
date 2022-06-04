@@ -5,7 +5,6 @@ import { AppDefaultHeader } from '@citrus/layouts';
 import { AppShell, Box, Group, useMantineColorScheme } from '@mantine/core';
 import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
 
 type PageLayoutProps = {
@@ -30,7 +29,6 @@ export const PageLayout = ({
   const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
   const [navbarOpened, setNavbarOpened] = useState<boolean>(false);
   const { toggleColorScheme } = useMantineColorScheme();
-  const router = useRouter();
   const titleTemplate = `${title} • citrus`;
 
   useHotkeys([['mod+.', () => toggleColorScheme()]]);
