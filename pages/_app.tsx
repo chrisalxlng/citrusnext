@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { AuthProvider } from '@citrus/contexts';
-import { Favicon, FullWidthHeightLoader } from '@citrus/core';
+import { Favicon, Loader } from '@citrus/core';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -18,10 +18,10 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [cookies, setCookie] = useCookies(['mantine-color-scheme']);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [queryClient] = useState(() => new QueryClient());
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     cookies['mantine-color-scheme']
   );
-  const queryClient = new QueryClient();
 
   useEffect(() => setLoading(false), []);
 
@@ -59,7 +59,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         >
           <NotificationsProvider position="top-right">
             {loading ? (
-              <FullWidthHeightLoader />
+              <Loader fullScreen />
             ) : (
               <CookiesProvider>
                 <AuthProvider>
