@@ -87,7 +87,11 @@
     },
     "groceries": {
       "title": "Groceries",
-      "new": "New Grocery"
+      "new": "New Grocery",
+      "empty": {
+        "title": "No Groceries",
+        "subtitle": "Create your first grocery and get started!"
+      }
     },
     "grocery": {
       "title": {

@@ -27,8 +27,8 @@ export const GroceriesPage = () => {
         loading={isLoading}
         emptyState={{
           empty: data?.length === 0,
-          title: 'No Groceries',
-          subtitle: 'Create your first grocery and get started!',
+          title: t('pages.groceries.empty.title'),
+          subtitle: t('pages.groceries.empty.subtitle'),
         }}
         title={t('pages.groceries.title')}
         button={{ label: t('pages.groceries.new'), href: '/app/groceries/new' }}
