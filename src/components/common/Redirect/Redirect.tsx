@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@citrus/hooks';
-import { FullWidthHeightLoader } from '@citrus/core';
+import { Loader } from '@citrus/core';
 
 export enum AuthStates {
   Authenticated,
@@ -29,5 +29,5 @@ export const Redirect = ({ children = null, to, when }: RedirectProps) => {
     } else setLoading(false);
   }, [currentUser]);
 
-  return <>{loading ? <FullWidthHeightLoader /> : children}</>;
+  return <>{loading ? <Loader fullScreen /> : children}</>;
 };

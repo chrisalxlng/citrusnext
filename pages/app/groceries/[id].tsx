@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { AuthStates, FullWidthHeightLoader, Redirect } from '@citrus/core';
+import { AuthStates, Loader, Redirect } from '@citrus/core';
 import { useGrocery } from '@citrus/hooks';
 import { GroceryPage } from '@citrus/pages';
 import { useRouter } from 'next/router';
@@ -14,7 +14,7 @@ export default function EditGrocery() {
   return (
     <Redirect to="/sign-in" when={AuthStates.Unauthenticatd}>
       {isLoading ? (
-        <FullWidthHeightLoader />
+        <Loader fullScreen />
       ) : (
         <GroceryPage grocery={data.find((grocery) => grocery.id === id)} />
       )}

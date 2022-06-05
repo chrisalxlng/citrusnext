@@ -1,4 +1,4 @@
-import { FullWidthHeightLoader } from '@citrus/core';
+import { Loader } from '@citrus/core';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { useCookies } from 'react-cookie';
@@ -240,7 +240,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <FullWidthHeightLoader /> : children}
+      {loading ? <Loader fullScreen /> : children}
     </AuthContext.Provider>
   );
 };

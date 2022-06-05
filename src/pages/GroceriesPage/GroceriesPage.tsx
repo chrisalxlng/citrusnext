@@ -1,4 +1,4 @@
-import { CardGroup, GroceryCard } from '@citrus/core';
+import { CardGroup, GroceryCard, GrocerySkeleton } from '@citrus/core';
 import { useGrocery } from '@citrus/hooks';
 import { EntityPageLayout } from '@citrus/layouts';
 import { useTranslation } from 'next-i18next';
@@ -11,22 +11,32 @@ export const GroceriesPage = () => {
   const { count, data, isLoading } = groceries;
 
   return (
-    <EntityPageLayout
-      title={t('pages.groceries.title')}
-      button={{ label: t('pages.groceries.new'), href: '/app/groceries/new' }}
-    >
-      {isLoading ? (
+    <EntityPageLayout title={t('pages.groceries.title')}>
+      <EntityPageLayout.Loading
+        loading={isLoading}
+        title={t('pages.groceries.title')}
+        button={{ label: t('pages.groceries.new'), href: '/app/groceries/new' }}
+      >
         <CardGroup cardMinWidth={270}>
           {createArray(count).map((index) => (
-            <GroceryCard key={index} isLoading={true} data={null} />
+            <GrocerySkeleton key={index} />
           ))}
         </CardGroup>
-      ) : (
+      </EntityPageLayout.Loading>
+      <EntityPageLayout.Body
+        loading={isLoading}
+        emptyState={{
+          empty: data?.length === 0,
+          title: 'No Groceries',
+          subtitle: 'Create your first grocery and get started!',
+        }}
+        title={t('pages.groceries.title')}
+        button={{ label: t('pages.groceries.new'), href: '/app/groceries/new' }}
+      >
         <CardGroup cardMinWidth={270}>
-          {data.map((grocery) => (
+          {data?.map((grocery) => (
             <GroceryCard
               key={grocery.id}
-              isLoading={false}
               data={{
                 id: grocery.id,
                 title: grocery.title,
@@ -39,7 +49,7 @@ export const GroceriesPage = () => {
             />
           ))}
         </CardGroup>
-      )}
+      </EntityPageLayout.Body>
     </EntityPageLayout>
   );
 };

@@ -90,10 +90,11 @@ export const useGrocery = () => {
       const { data }: AxiosResponse<Grocery[]> = await instance.get(
         `${API_URL}${GROCERIES_ROUTE}`
       );
-      setCookie('grocery-count', data.length), { path: '/app' };
+      setCookie('grocery-count', data.length || 1), { path: '/app' };
       setCount(data.length);
       return data;
-    }
+    },
+    { keepPreviousData: true }
   );
 
   const add: UseMutationResult<any, unknown, CreateGrocery, unknown> =
