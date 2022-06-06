@@ -126,9 +126,7 @@ export const useGrocery = () => {
         onError: (grocery: Grocery) => {
           showNotification({
             title: t('notifications.error.grocery_addition.title'),
-            message: t('notifications.error.grocery_addition.message', {
-              grocery: grocery.title,
-            }),
+            message: t('notifications.error.grocery_addition.message'),
             type: NotificationTypes.Error,
           });
         },
@@ -163,9 +161,7 @@ export const useGrocery = () => {
       onError: (grocery: Grocery) => {
         showNotification({
           title: t('notifications.error.grocery_update.title'),
-          message: t('notifications.error.grocery_update.message', {
-            grocery: grocery.title,
-          }),
+          message: t('notifications.error.grocery_update.message'),
           type: NotificationTypes.Error,
         });
       },
@@ -200,9 +196,7 @@ export const useGrocery = () => {
       onError: (grocery: Grocery) => {
         showNotification({
           title: t('notifications.error.grocery_deletion.title'),
-          message: t('notifications.error.grocery_deletion.message', {
-            grocery: grocery.title,
-          }),
+          message: t('notifications.error.grocery_deletion.message'),
           type: NotificationTypes.Error,
         });
       },

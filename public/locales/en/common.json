@@ -181,15 +181,15 @@
       },
       "grocery_addition": {
         "title": "Grocery Addition Error",
-        "message": "{{grocery}} could not be added."
+        "message": "Grocery could not be added."
       },
       "grocery_update": {
         "title": "Grocery Update Error",
-        "message": "{{grocery}} could not be updated."
+        "message": "Grocery could not be updated."
       },
       "grocery_deletion": {
         "title": "Grocery Deletion Error",
-        "message": "{{grocery}} could not be deleted."
+        "message": "Grocery could not be deleted."
       }
     },
     "success": {
