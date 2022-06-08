@@ -1,7 +1,7 @@
 import { Group, Skeleton, Space } from '@mantine/core';
 import { Card } from '@citrus/core';
 
-export const GrocerySkeleton = () => {
+export const FoodSkeleton = () => {
   return (
     <Card sx={{ width: '100%', maxWidth: 370 }}>
       <Group align="center" noWrap>

@@ -1,4 +1,4 @@
-import { MacroNutrientTag } from '@citrus/hooks';
+import { MacroNutrientTag } from '@citrus/types';
 import { Badge } from '@mantine/core';
 import { useTranslation } from 'next-i18next';
 

@@ -9,9 +9,10 @@ export * from './common/CardGroup/CardGroup';
 export * from './common/IconSelect/IconSelect';
 export * from './common/SplitButton/SplitButton';
 export * from './common/EmptyState/EmptyState';
+export * from './common/IngredientsSelect/IngredientsSelect';
 
 export * from './modals/ConfirmModal/ConfirmModal';
 
 export * from './cards/Card/Card';
-export * from './cards/GroceryCard/GroceryCard';
-export * from './cards/GroceryCard/GrocerySkeleton';
+export * from './cards/FoodCard/FoodCard';
+export * from './cards/FoodCard/FoodSkeleton';

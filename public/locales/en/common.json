@@ -83,7 +83,60 @@
       "title": "Today"
     },
     "dishes": {
-      "title": "Dishes"
+      "title": "Dishes",
+      "new": "New Dish",
+      "empty": {
+        "title": "No Dishes",
+        "subtitle": "Create your first dish and get started!"
+      }
+    },
+    "dish": {
+      "title": {
+        "new": "New Dish",
+        "update": "Update Dish"
+      },
+      "actions": {
+        "add": "Add Dish",
+        "update": "Update Dish",
+        "delete": "Delete Dish"
+      },
+      "helper": {
+        "general": {
+          "title": "General Information",
+          "text": "Please provide general information about the dish you want to add.\nThe default portion size is the amount of grams or mililiters you usually consume the dish (e.g. 1 Banana = 120 g)."
+        },
+        "ingredients": {
+          "title": "Ingredients",
+          "text": "A dish consists of a list of ingredients.\nPlease add some ingredients to your dish.\nBased on these specifications the associated calorie value as well as the macronutrients will be calculated."
+        }
+      },
+      "form": {
+        "title": {
+          "label": "Title",
+          "placeholder": "Fruit Salad"
+        },
+        "icon": {
+          "label": "Icon"
+        },
+        "potion_size": {
+          "label": "Portion Size"
+        },
+        "unit": {
+          "label": "Unit"
+        },
+        "carbs": {
+          "label": "Carbohydrates"
+        },
+        "fats": {
+          "label": "Fats"
+        },
+        "proteins": {
+          "label": "Proteins"
+        },
+        "calories": {
+          "label": "Calories"
+        }
+      }
     },
     "groceries": {
       "title": "Groceries",
@@ -190,6 +243,18 @@
       "grocery_deletion": {
         "title": "Grocery Deletion Error",
         "message": "Grocery could not be deleted."
+      },
+      "dish_addition": {
+        "title": "Dish Addition Error",
+        "message": "Dish could not be added."
+      },
+      "dish_update": {
+        "title": "Dish Update Error",
+        "message": "Dish could not be updated."
+      },
+      "dish_deletion": {
+        "title": "Dish Deletion Error",
+        "message": "Dish could not be deleted."
       }
     },
     "success": {
@@ -210,6 +275,18 @@
       "grocery_deletion": {
         "title": "Grocery deleted",
         "message": "{{grocery}} was deleted successfully."
+      },
+      "dish_addition": {
+        "title": "Dish added",
+        "message": "{{dish}} was added succesfully."
+      },
+      "dish_update": {
+        "title": "Dish updated",
+        "message": "{{dish}} was updated successfully."
+      },
+      "dish_deletion": {
+        "title": "Dish deleted",
+        "message": "{{dish}} was deleted successfully."
       }
     }
   }

@@ -1,9 +1,8 @@
-import { CardGroup, GroceryCard, GrocerySkeleton } from '@citrus/core';
+import { CardGroup, FoodCard, FoodSkeleton } from '@citrus/core';
 import { useGrocery } from '@citrus/hooks';
 import { EntityPageLayout } from '@citrus/layouts';
+import { createArray } from '@citrus/util';
 import { useTranslation } from 'next-i18next';
-
-export const createArray = (count: number) => Array.from(Array(count).keys());
 
 export const GroceriesPage = () => {
   const { t } = useTranslation('common');
@@ -19,7 +18,7 @@ export const GroceriesPage = () => {
       >
         <CardGroup cardMinWidth={270}>
           {createArray(count).map((index) => (
-            <GrocerySkeleton key={index} />
+            <FoodSkeleton key={index} />
           ))}
         </CardGroup>
       </EntityPageLayout.Loading>
@@ -35,8 +34,9 @@ export const GroceriesPage = () => {
       >
         <CardGroup cardMinWidth={270}>
           {data?.map((grocery) => (
-            <GroceryCard
+            <FoodCard
               key={grocery.id}
+              href={`/app/groceries/${grocery.id}`}
               data={{
                 id: grocery.id,
                 title: grocery.title,

@@ -1,5 +1,5 @@
 import { Card, MacroNutrientBadge } from '@citrus/core';
-import { MacroNutrientTag, Unit } from '@citrus/hooks';
+import { MacroNutrientTag, Unit } from '@citrus/types';
 import { FoodIcon } from '@citrus/icons';
 import {
   Group,
@@ -12,7 +12,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import { BrandTinder, ScaleOutline } from 'tabler-icons-react';
 
-type GroceryCardProps = {
+type FoodCardProps = {
+  href: string;
   data: {
     id: string;
     title: string;
@@ -26,7 +27,7 @@ type GroceryCardProps = {
 
 const MAX_MACRO_NUTRIENT_BADGES = 3;
 
-export const GroceryCard = ({ data }: GroceryCardProps) => {
+export const FoodCard = ({ data, href }: FoodCardProps) => {
   const { t } = useTranslation('common');
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
@@ -45,10 +46,7 @@ export const GroceryCard = ({ data }: GroceryCardProps) => {
 
   return (
     !!data && (
-      <Card
-        href={`/app/groceries/${data.id}`}
-        sx={{ width: '100%', maxWidth: 370 }}
-      >
+      <Card href={href} sx={{ width: '100%', maxWidth: 370 }}>
         <Group align="center" noWrap sx={{ overflow: 'hidden' }}>
           <ThemeIcon p={4} color="blue" variant="light" size="xl" radius="md">
             <FoodIcon id={data.iconId} size={24} />

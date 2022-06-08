@@ -13,64 +13,7 @@ import { useNotification, useTokenRequest } from '@citrus/hooks';
 import { NotificationTypes } from '../useNotification/useNotification';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-
-export enum Unit {
-  Grams = 'g',
-  Mililiters = 'ml',
-}
-
-export enum MacroNutrientTag {
-  HIGH_CARBOHYDRATE = 'high_carb',
-  LOW_CARBOHYDRATE = 'low_carb',
-  HIGH_FAT = 'high_fat',
-  LOW_FAT = 'low_fat',
-  HIGH_PROTEIN = 'high_protein',
-  LOW_PROTEIN = 'low_protein',
-  BALANCED_MACROS = 'balanced_macros',
-}
-
-type CreateGrocery = {
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
-  userId: string;
-};
-
-export type UpdateGrocery = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
-  userId: string;
-};
-
-type Grocery = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  calories: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
-  macroNutrientTags: MacroNutrientTag[];
-  userId: string;
-};
+import { CreateGrocery, Grocery, UpdateGrocery } from '@citrus/types';
 
 export const useGrocery = () => {
   const { t } = useTranslation();
