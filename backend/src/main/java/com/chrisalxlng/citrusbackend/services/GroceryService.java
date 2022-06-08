@@ -1,12 +1,14 @@
 package com.chrisalxlng.citrusbackend.services;
 
 import com.chrisalxlng.citrusbackend.models.Grocery;
+import com.chrisalxlng.citrusbackend.models.GroceryResponse;
 import com.chrisalxlng.citrusbackend.models.MacroNutrients;
 import com.chrisalxlng.citrusbackend.models.Unit;
 import com.chrisalxlng.citrusbackend.repositories.GroceryRepository;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,94 +19,105 @@ import org.springframework.stereotype.Service;
 public class GroceryService {
 
   private final GroceryRepository groceryRepository;
+  private final MacroNutrientsService macroNutrientsService;
 
-  final int CARBOHYDRATES_CALORIES_FACTOR = 4;
-  final int FATS_CALORIES_FACTOR = 9;
-  final int PROTEIN_CALORIES_FACTOR = 4;
-
-  final double CARBOHYDRATES_HIGH_BREAKPOINT = 0.7;
-  final double CARBOHYDRATES_LOW_BREAKPOINT = 0.25;
-  final double FATS_HIGH_BREAKPOINT = 0.35;
-  final double FATS_LOW_BREAKPOINT = 0.25;
-  final double PROTEINS_HIGH_BREAKPOINT = 0.3;
-  final double PROTEINS_LOW_BREAKPOINT = 0.08;
-
-  String[] getMacroTags(
-    int calories, 
-    double carbohydratesInCalories, 
-    double fatsInCalories, 
-    double proteinsInCalories
-  ) {
-    double highCarbTagQuotient = (carbohydratesInCalories / calories) - CARBOHYDRATES_HIGH_BREAKPOINT;
-    double lowCarbTagQuotient = CARBOHYDRATES_LOW_BREAKPOINT - (carbohydratesInCalories / calories);
-    double highFatTagQuotient = (fatsInCalories / calories) - FATS_HIGH_BREAKPOINT;
-    double lowFatTagQuotient = FATS_LOW_BREAKPOINT - (fatsInCalories / calories);
-    double highProteinTagQuotient = (proteinsInCalories / calories) - PROTEINS_HIGH_BREAKPOINT;
-    double lowProteinTagQuotient = PROTEINS_LOW_BREAKPOINT - (proteinsInCalories / calories);
-
-    class MacroTagBreakpoint {
-      String key;
-      double quotient;
-
-      MacroTagBreakpoint(String key, double quotient) {
-        this.key = key;
-        this.quotient = quotient;
-      }
-    }
-
-    MacroTagBreakpoint[] tagBreakpoints = {
-      new MacroTagBreakpoint("high_carb", highCarbTagQuotient),
-      new MacroTagBreakpoint("low_carb", lowCarbTagQuotient),
-      new MacroTagBreakpoint("high_fat", highFatTagQuotient),
-      new MacroTagBreakpoint("low_fat", lowFatTagQuotient),
-      new MacroTagBreakpoint("high_protein", highProteinTagQuotient),
-      new MacroTagBreakpoint("low_protein", lowProteinTagQuotient),
-    };    
-
-    MacroTagBreakpoint[] filteredTagBreakpoints = 
-      Arrays.stream(tagBreakpoints)
-            .filter(tag -> tag.quotient > 0)
-            .toArray(size -> new MacroTagBreakpoint[size]);
-
-    MacroTagBreakpoint[] sortedTagBreakpoints = filteredTagBreakpoints;
-    Arrays.sort(sortedTagBreakpoints, (tag1, tag2) -> (tag1.quotient < tag2.quotient) ? (1) : (-1));
-
-    String[] filteredMacroTags = 
-      Arrays.stream(sortedTagBreakpoints)
-            .map(tag -> tag.key)
-            .toArray(size -> new String[size]);
-    String[] balancedMacroTag = {"balanced_macros"};
-    
-    String[] macroNutrientTags = (filteredMacroTags.length == 0) ? balancedMacroTag : filteredMacroTags;
-
-    return macroNutrientTags;
-  }
-
-  public List<Grocery> getAllGroceries() {
+  public List<GroceryResponse> getAllGroceries() {
     List<Grocery> groceries = groceryRepository.findAll();
 
     if (!groceries.isEmpty()) {
-      return groceries;
-    } else return null;
+      List<GroceryResponse> groceriesResponse= groceries.stream()
+        .map(grocery -> {
+          int calories = 
+            macroNutrientsService.getCalories(
+              grocery.getMacroNutrientsPer100(), 
+              grocery.getPortionSize()
+            );
+          String[] macroNutrientTags = macroNutrientsService.getMacroTags(
+            grocery.getMacroNutrientsPer100(), 
+            grocery.getPortionSize()
+          );
+          GroceryResponse groceryResponse = new GroceryResponse(
+            grocery.getId(), 
+            grocery.getTitle(), 
+            grocery.getIconId(), 
+            grocery.getUnit(), 
+            grocery.getPortionSize(), 
+            calories, 
+            grocery.getMacroNutrientsPer100(), 
+            macroNutrientTags, 
+            grocery.getUserId()
+          );
+
+          return groceryResponse;
+        }).collect(Collectors.toList());
+
+      return groceriesResponse;
+    } else return Collections.emptyList();
   }
 
-  public Grocery getGroceryById(String id) {
+  public GroceryResponse getGroceryById(String id) {
     Optional<Grocery> groceryEntry = groceryRepository.findGroceryById(id);
 
     if (groceryEntry.isPresent()) {
-      return groceryEntry.get();
+      int calories = 
+        macroNutrientsService.getCalories(
+          groceryEntry.get().getMacroNutrientsPer100(), 
+          groceryEntry.get().getPortionSize()
+        );
+      String[] macroNutrientTags = macroNutrientsService.getMacroTags(
+        groceryEntry.get().getMacroNutrientsPer100(), 
+        groceryEntry.get().getPortionSize()
+      );
+      GroceryResponse grocery = new GroceryResponse(
+        groceryEntry.get().getId(),
+        groceryEntry.get().getTitle(), 
+        groceryEntry.get().getIconId(), 
+        groceryEntry.get().getUnit(), 
+        groceryEntry.get().getPortionSize(), 
+        calories, 
+        groceryEntry.get().getMacroNutrientsPer100(), 
+        macroNutrientTags, 
+        groceryEntry.get().getUserId()
+      );
+      return grocery;
     } else {
       log.error("Error accessing grocery: Grocery not found");
       return null;
     }
   }
 
-  public List<Grocery> getGroceriesByUserId(String userId) {
+  public List<GroceryResponse> getGroceriesByUserId(String userId) {
     List<Grocery> groceries = groceryRepository.findGroceriesByUserId(userId);
 
     if (!groceries.isEmpty()) {
-      return groceries;
-    } else return null;
+      List<GroceryResponse> groceriesResponse= groceries.stream()
+        .map(grocery -> {
+          int calories = 
+            macroNutrientsService.getCalories(
+              grocery.getMacroNutrientsPer100(), 
+              grocery.getPortionSize()
+            );
+          String[] macroNutrientTags = macroNutrientsService.getMacroTags(
+            grocery.getMacroNutrientsPer100(), 
+            grocery.getPortionSize()
+          );
+          GroceryResponse groceryResponse = new GroceryResponse(
+            grocery.getId(), 
+            grocery.getTitle(), 
+            grocery.getIconId(), 
+            grocery.getUnit(), 
+            grocery.getPortionSize(), 
+            calories, 
+            grocery.getMacroNutrientsPer100(), 
+            macroNutrientTags, 
+            grocery.getUserId()
+          );
+
+          return groceryResponse;
+        }).collect(Collectors.toList());
+
+      return groceriesResponse;
+    } else return Collections.emptyList();
   }
 
   public Grocery createGrocery(
@@ -115,25 +128,12 @@ public class GroceryService {
     MacroNutrients macroNutrientsPer100,
     String userId
   ) {
-    double carbohydratesInCalories = macroNutrientsPer100.getCarbohydrates() * CARBOHYDRATES_CALORIES_FACTOR;
-    double fatsInCalories = macroNutrientsPer100.getFats() * FATS_CALORIES_FACTOR;
-    double proteinsInCalories = macroNutrientsPer100.getProteins() * PROTEIN_CALORIES_FACTOR;
-
-    double caloriesPer100Sum = Math.round(carbohydratesInCalories + fatsInCalories + proteinsInCalories);
-    int caloriesPer100 = (int) caloriesPer100Sum;
-    int calories = (int) (caloriesPer100Sum / 100 * portionSize);
-
-    String[] macroNutrientTags = 
-      getMacroTags(caloriesPer100, carbohydratesInCalories, fatsInCalories, proteinsInCalories);
-
     Grocery grocery = new Grocery(
       title,
       iconId,
       unit,
       portionSize,
-      calories,
       macroNutrientsPer100,
-      macroNutrientTags,
       userId
     );
 
@@ -154,24 +154,12 @@ public class GroceryService {
     Optional<Grocery> groceryEntry = groceryRepository.findGroceryById(id);
 
     if (groceryEntry.isPresent()) {
-      double carbohydratesInCalories = macroNutrientsPer100.getCarbohydrates() * CARBOHYDRATES_CALORIES_FACTOR;
-      double fatsInCalories = macroNutrientsPer100.getFats() * FATS_CALORIES_FACTOR;
-      double proteinsInCalories = macroNutrientsPer100.getProteins() * PROTEIN_CALORIES_FACTOR;
-
-      double caloriesPer100Sum = Math.round(carbohydratesInCalories + fatsInCalories + proteinsInCalories);
-      int caloriesPer100 = (int) caloriesPer100Sum;
-      int calories = (int) (caloriesPer100Sum / 100 * portionSize);
-
-      String[] macroNutrientTags = 
-        getMacroTags(caloriesPer100, carbohydratesInCalories, fatsInCalories, proteinsInCalories);
-
       Grocery grocery = groceryEntry.get();
       grocery.setTitle(title);
+      grocery.setIconId(iconId);
       grocery.setUnit(unit);
       grocery.setPortionSize(portionSize);
-      grocery.setCalories(calories);
       grocery.setMacroNutrientsPer100(macroNutrientsPer100);
-      grocery.setMacroNutrientTags(macroNutrientTags);
       grocery.setUserId(userId);
       groceryRepository.save(grocery);
       log.info("Grocery " + grocery.getTitle() + " updated");

@@ -1,6 +1,7 @@
 package com.chrisalxlng.citrusbackend.controllers;
 
 import com.chrisalxlng.citrusbackend.models.Grocery;
+import com.chrisalxlng.citrusbackend.models.GroceryResponse;
 import com.chrisalxlng.citrusbackend.services.GroceryService;
 import java.net.URI;
 import java.util.List;
@@ -30,14 +31,15 @@ public class GroceryController {
   private final GroceryService groceryService;
 
   @GetMapping(value = "/groceries", produces = "application/json")
-  public ResponseEntity<List<Grocery>> getAllGroceries() {
+  public ResponseEntity<List<GroceryResponse>> getAllGroceries() {
     try {
       String userId = SecurityContextHolder
         .getContext()
         .getAuthentication()
         .getPrincipal()
         .toString();
-      List<Grocery> groceries = groceryService.getGroceriesByUserId(userId);
+      List<GroceryResponse> groceries = groceryService.getGroceriesByUserId(userId);
+      
       if (groceries == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return ResponseEntity.ok().body(groceries);
     } catch (Exception exception) {
@@ -47,9 +49,9 @@ public class GroceryController {
 
   @GetMapping(value = "/grocery/{id}", produces = "application/json")
   @PreAuthorize("@authenticationService.hasAccessToGrocery(#id)")
-  public ResponseEntity<Grocery> getGrocery(@PathVariable @NonNull String id) {
+  public ResponseEntity<GroceryResponse> getGrocery(@PathVariable @NonNull String id) {
     try {
-      Grocery grocery = groceryService.getGroceryById(id);
+      GroceryResponse grocery = groceryService.getGroceryById(id);
       if (grocery == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       log.info(grocery.getTitle() + " accessed");
       return ResponseEntity.ok().body(grocery);

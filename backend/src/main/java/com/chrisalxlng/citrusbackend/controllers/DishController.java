@@ -1,6 +1,7 @@
 package com.chrisalxlng.citrusbackend.controllers;
 
 import com.chrisalxlng.citrusbackend.models.Dish;
+import com.chrisalxlng.citrusbackend.models.DishResponse;
 import com.chrisalxlng.citrusbackend.services.DishService;
 import com.mongodb.lang.NonNull;
 import java.net.URI;
@@ -30,14 +31,14 @@ public class DishController {
   private final DishService dishService;
 
   @GetMapping(value = "/dishes", produces = "application/json")
-  public ResponseEntity<List<Dish>> getAllDishes() {
+  public ResponseEntity<List<DishResponse>> getAllDishes() {
     try {
       String userId = SecurityContextHolder
         .getContext()
         .getAuthentication()
         .getPrincipal()
         .toString();
-      List<Dish> dishes = dishService.getDishesByUserId(userId);
+      List<DishResponse> dishes = dishService.getDishesByUserId(userId);
       if (dishes == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return ResponseEntity.ok().body(dishes);
     } catch (Exception exception) {
@@ -47,9 +48,9 @@ public class DishController {
 
   @GetMapping(value = "/dish/{id}", produces = "application/json")
   @PreAuthorize("@authenticationService.hasAccessToDish(#id)")
-  public ResponseEntity<Dish> getDish(@PathVariable @NonNull String id) {
+  public ResponseEntity<DishResponse> getDish(@PathVariable @NonNull String id) {
     try {
-      Dish dish = dishService.getDishById(id);
+      DishResponse dish = dishService.getDishById(id);
       if (dish == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       log.info(dish.getTitle() + " accessed");
       return ResponseEntity.ok().body(dish);
@@ -74,6 +75,7 @@ public class DishController {
     try {
       Dish dishResponse = dishService.createDish(
         dish.getTitle(),
+        dish.getIconId(),
         dish.getUnit(),
         dish.getPortionSize(),
         dish.getIngredients(),
@@ -108,6 +110,7 @@ public class DishController {
       Dish dishResponse = dishService.updateDish(
         id,
         dish.getTitle(),
+        dish.getIconId(),
         dish.getUnit(),
         dish.getPortionSize(),
         dish.getIngredients(),

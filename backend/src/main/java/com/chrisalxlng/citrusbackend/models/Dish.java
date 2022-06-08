@@ -12,6 +12,7 @@ public class Dish {
   private String id;
 
   private String title;
+  private int iconId;
   private Unit unit;
   private int portionSize;
   private Ingredient[] ingredients;
@@ -19,12 +20,14 @@ public class Dish {
 
   public Dish(
     String title,
+    int iconId,
     Unit unit,
     int portionSize,
     Ingredient[] ingredients,
     String userId
   ) {
     this.title = title;
+    this.iconId = iconId;
     this.unit = unit;
     this.portionSize = portionSize;
     this.ingredients = ingredients;
