@@ -1,7 +1,6 @@
 import { HEADER_HEIGHT } from '@citrus/constants';
 import { Tooltip } from '@citrus/core';
 import { ActionIcon, Group, Header, Text } from '@mantine/core';
-import { useHotkeys } from '@mantine/hooks';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { X } from 'tabler-icons-react';
@@ -17,7 +16,6 @@ export const AppCloseHeader = ({
 }: AppCloseHeaderProps) => {
   const { t } = useTranslation();
   const router = useRouter();
-  useHotkeys([['Escape', () => router.back()]]);
 
   return (
     <Header height={HEADER_HEIGHT} px="md">

@@ -1,5 +1,11 @@
+import {
+  IngredientModal,
+  IngredientModalType,
+  getFormattedNumber,
+} from '@citrus/core';
+import { useGrocery, useModal } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
-import { Ingredient } from '@citrus/types';
+import { Ingredient, Unit } from '@citrus/types';
 import {
   ActionIcon,
   Box,
@@ -11,19 +17,74 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from '@mantine/core';
+import { SpotlightAction, useSpotlight } from '@mantine/spotlight';
+import { useEffect, MouseEvent } from 'react';
 import { Plus, Trash } from 'tabler-icons-react';
-import { EmptyState } from '../EmptyState/EmptyState';
+import { EmptyState } from '@citrus/core';
+import { useTranslation } from 'next-i18next';
 
 type IngredientsSelectProps = {
   ingredients: Ingredient[];
+  onChange?: (ingredients: Ingredient[]) => void;
 };
 
-export const IngredientsSelect = ({ ingredients }: IngredientsSelectProps) => {
+export const IngredientsSelect = ({
+  ingredients,
+  onChange = null,
+}: IngredientsSelectProps) => {
+  const { t } = useTranslation();
   const { colorScheme } = useMantineColorScheme();
+  const { opened, toggleSpotlight, registerActions } = useSpotlight();
+  const { groceries } = useGrocery();
+  const [modal, openModal, data, type] = useModal<
+    IngredientModalType,
+    Ingredient
+  >();
   const isDarkTheme = colorScheme === 'dark';
 
-  const rows = ingredients.map((ing, index) => (
-    <tr key={ing.grocery.id}>
+  const getCalorieLabel = (amount: string) =>
+    t('common.units.amount.kcal', { amount });
+
+  const getQuantityLabel = (unit: Unit, amount: string) =>
+    t(`common.units.amount.${unit}`, {
+      amount,
+    });
+
+  useEffect(() => {
+    if (!groceries.data) return;
+    const ingredientActions: SpotlightAction[] = groceries.data
+      ?.filter(
+        (grocery) =>
+          !ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
+      )
+      .map((grocery) => ({
+        id: grocery.id,
+        title: grocery.title,
+        description: `${grocery.portionSize} ${grocery.unit} • ${grocery.calories} kcal`,
+        onTrigger: () => {
+          openModal({
+            data: { grocery, quantity: grocery.portionSize },
+            type: 'add',
+          });
+        },
+        icon: <FoodIcon id={grocery.iconId} size={18} />,
+      }));
+    setTimeout(() => registerActions(ingredientActions), 100);
+  }, [groceries.isFetched, opened]);
+
+  const AddIngredientButton = (
+    <Button
+      variant="outline"
+      leftIcon={<Plus size={16} />}
+      fullWidth
+      onClick={toggleSpotlight}
+    >
+      Add Ingredient
+    </Button>
+  );
+
+  const rows = ingredients.map((ingredient, index) => (
+    <tr key={ingredient.grocery.id}>
       <td
         style={{
           paddingTop: index === 0 && 0,
@@ -31,6 +92,7 @@ export const IngredientsSelect = ({ ingredients }: IngredientsSelectProps) => {
         }}
       >
         <UnstyledButton
+          onClick={() => openModal({ data: ingredient, type: 'update' })}
           sx={(theme) => ({
             width: '100%',
             borderRadius: theme.radius.md,
@@ -50,27 +112,50 @@ export const IngredientsSelect = ({ ingredients }: IngredientsSelectProps) => {
         >
           <Group noWrap>
             <Group noWrap align="center" sx={{ flexGrow: 1 }}>
-              <FoodIcon id={ing.grocery.iconId} size={24} />
-              <Box sx={{ maxWidth: '150px' }}>
+              <FoodIcon id={ingredient.grocery.iconId} size={24} />
+              <Group
+                direction="column"
+                noWrap
+                spacing={0}
+                sx={{ maxWidth: '150px' }}
+              >
                 <Text
                   size="sm"
                   weight={500}
-                  sx={{ overflow: 'clip', textOverflow: 'ellipsis' }}
+                  lineClamp={1}
+                  sx={{
+                    overflow: 'clip',
+                    textOverflow: 'ellipsis',
+                  }}
                 >
-                  {ing.grocery.title}
+                  {ingredient.grocery.title}
                 </Text>
                 <Text
                   size="xs"
                   color="dimmed"
+                  lineClamp={1}
                   sx={{ overflow: 'clip', textOverflow: 'ellipsis' }}
                 >
-                  {`${ing.quantity} ${ing.grocery.unit} • ${ing.grocery.calories} kcal`}
+                  {`${getQuantityLabel(
+                    ingredient.grocery.unit,
+                    getFormattedNumber(ingredient.quantity)
+                  )} • ${getCalorieLabel(
+                    getFormattedNumber(ingredient.grocery.calories)
+                  )}`}
                 </Text>
-              </Box>
+              </Group>
             </Group>
             <ActionIcon
               size={36}
               color="red"
+              onClick={(event: MouseEvent<HTMLElement>) => {
+                event.stopPropagation();
+                onChange(
+                  ingredients.filter(
+                    (ing) => ing.grocery.id !== ingredient.grocery.id
+                  )
+                );
+              }}
               sx={(theme) => ({
                 '&:hover': {
                   backgroundColor: isDarkTheme
@@ -89,16 +174,32 @@ export const IngredientsSelect = ({ ingredients }: IngredientsSelectProps) => {
 
   return (
     <>
-      {ingredients.length === 0 ? (
+      {data && (
+        <IngredientModal
+          modal={modal}
+          type={type}
+          ingredient={data}
+          onSubmit={(ingredient) => {
+            const isNewIngredient = ingredients.some(
+              (ing) => ing.grocery.id === ingredient.grocery.id
+            );
+            const updatedIngredients = ingredients.map((ing) =>
+              ing.grocery.id === ingredient.grocery.id ? ingredient : ing
+            );
+            onChange(
+              isNewIngredient
+                ? updatedIngredients
+                : [...ingredients, ingredient]
+            );
+          }}
+        />
+      )}
+      {!ingredients.length ? (
         <EmptyState
           order={3}
-          title="No Ingredients"
-          subtitle="Add an ingredient to get started."
-          button={
-            <Button variant="outline" leftIcon={<Plus size={16} />} fullWidth>
-              Add Ingredient
-            </Button>
-          }
+          title={t('pages.dish.form.empty.title')}
+          subtitle={t('pages.dish.form.empty.subtitle')}
+          button={AddIngredientButton}
         />
       ) : (
         <>
@@ -116,9 +217,7 @@ export const IngredientsSelect = ({ ingredients }: IngredientsSelectProps) => {
             </Box>
           </Box>
           <Space h={20} />
-          <Button variant="outline" leftIcon={<Plus size={16} />} fullWidth>
-            Add Ingredient
-          </Button>
+          {AddIngredientButton}
         </>
       )}
     </>

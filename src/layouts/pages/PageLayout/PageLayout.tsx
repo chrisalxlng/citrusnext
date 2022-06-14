@@ -1,4 +1,5 @@
 import { HEADER_HEIGHT } from '@citrus/constants';
+import { Spotlight } from '@citrus/core';
 import { FooterLayout } from '@citrus/layouts';
 import { AppDefaultNavbar } from '@citrus/layouts';
 import { AppDefaultHeader } from '@citrus/layouts';
@@ -15,6 +16,7 @@ type PageLayoutProps = {
   noHeader?: boolean;
   noNavbar?: boolean;
   noFooter?: boolean;
+  disableSpotlightMainActions?: boolean;
 };
 
 export const PageLayout = ({
@@ -25,6 +27,7 @@ export const PageLayout = ({
   noHeader = false,
   noNavbar = false,
   noFooter = false,
+  disableSpotlightMainActions = false,
 }: PageLayoutProps) => {
   const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
   const [navbarOpened, setNavbarOpened] = useState<boolean>(false);
@@ -50,7 +53,7 @@ export const PageLayout = ({
   );
 
   return (
-    <>
+    <Spotlight disableMainActions={disableSpotlightMainActions}>
       <Head>
         <title>{title ? titleTemplate : 'citrus'}</title>
         <meta
@@ -84,6 +87,6 @@ export const PageLayout = ({
           </Group>
         )}
       </AppShell>
-    </>
+    </Spotlight>
   );
 };

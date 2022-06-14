@@ -101,6 +101,7 @@ export const DishPage = ({ dish }: DishPageProps) => {
           />
         }
         noNavbar
+        disableSpotlightMainActions
       >
         <Container size={700} ref={focusTrapRef}>
           <Group direction="column" spacing={50} pb="xl">
@@ -217,7 +218,12 @@ export const DishPage = ({ dish }: DishPageProps) => {
                 </Text>
               </Group>
               <Card p="xl" sx={{ flex: '1 1', minWidth: 305 }}>
-                <IngredientsSelect ingredients={form.values.ingredients} />
+                <IngredientsSelect
+                  ingredients={form.values.ingredients}
+                  onChange={(ingredients) =>
+                    form.setFieldValue('ingredients', ingredients)
+                  }
+                />
               </Card>
             </Group>
           </Group>

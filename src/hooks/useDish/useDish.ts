@@ -62,7 +62,7 @@ export const useDish = () => {
         });
         router.push('/app/dishes');
       },
-      onError: (dish: Dish) => {
+      onError: () => {
         showNotification({
           title: t('notifications.error.dish_addition.title'),
           message: t('notifications.error.dish_addition.message'),
@@ -97,7 +97,7 @@ export const useDish = () => {
         });
         router.push('/app/dishes');
       },
-      onError: (dish: Dish) => {
+      onError: () => {
         showNotification({
           title: t('notifications.error.dish_update.title'),
           message: t('notifications.error.dish_update.message'),
@@ -116,19 +116,17 @@ export const useDish = () => {
     {
       onSuccess: (dish: Dish) => {
         queryClient.setQueryData('dishes', (currentDishes: Dish[]) =>
-          currentDishes.filter((dish: Dish) => dish.id !== dish.id)
+          currentDishes.filter((d: Dish) => d.id !== dish.id)
         );
         setCount(count - 1);
         showNotification({
           title: t('notifications.success.dish_deletion.title'),
-          message: t('notifications.success.dish_deletion.message', {
-            dish: dish.title,
-          }),
+          message: t('notifications.success.dish_deletion.message'),
           type: NotificationTypes.Success,
         });
         router.push('/app/dishes');
       },
-      onError: (dish: Dish) => {
+      onError: () => {
         showNotification({
           title: t('notifications.error.dish_deletion.title'),
           message: t('notifications.error.dish_deletion.message'),

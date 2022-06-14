@@ -10,8 +10,10 @@ export * from './common/IconSelect/IconSelect';
 export * from './common/SplitButton/SplitButton';
 export * from './common/EmptyState/EmptyState';
 export * from './common/IngredientsSelect/IngredientsSelect';
+export * from './common/Spotlight/Spotlight';
 
 export * from './modals/ConfirmModal/ConfirmModal';
+export * from './modals/IngredientModal/IngredientModal';
 
 export * from './cards/Card/Card';
 export * from './cards/FoodCard/FoodCard';

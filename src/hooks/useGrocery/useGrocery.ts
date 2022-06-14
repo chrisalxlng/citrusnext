@@ -66,7 +66,7 @@ export const useGrocery = () => {
           });
           router.push('/app/groceries');
         },
-        onError: (grocery: Grocery) => {
+        onError: () => {
           showNotification({
             title: t('notifications.error.grocery_addition.title'),
             message: t('notifications.error.grocery_addition.message'),
@@ -101,7 +101,7 @@ export const useGrocery = () => {
         });
         router.push('/app/groceries');
       },
-      onError: (grocery: Grocery) => {
+      onError: () => {
         showNotification({
           title: t('notifications.error.grocery_update.title'),
           message: t('notifications.error.grocery_update.message'),
@@ -122,21 +122,17 @@ export const useGrocery = () => {
     {
       onSuccess: (grocery: Grocery) => {
         queryClient.setQueryData('groceries', (currentGroceries: Grocery[]) =>
-          currentGroceries.filter(
-            (grocery: Grocery) => grocery.id !== grocery.id
-          )
+          currentGroceries.filter((g: Grocery) => g.id !== grocery.id)
         );
         setCount(count - 1);
         showNotification({
           title: t('notifications.success.grocery_deletion.title'),
-          message: t('notifications.success.grocery_deletion.message', {
-            grocery: grocery.title,
-          }),
+          message: t('notifications.success.grocery_deletion.message'),
           type: NotificationTypes.Success,
         });
         router.push('/app/groceries');
       },
-      onError: (grocery: Grocery) => {
+      onError: () => {
         showNotification({
           title: t('notifications.error.grocery_deletion.title'),
           message: t('notifications.error.grocery_deletion.message'),

@@ -27,22 +27,22 @@ type FoodCardProps = {
 
 const MAX_MACRO_NUTRIENT_BADGES = 3;
 
+export const getFormattedNumber = (number: number): string => {
+  if (number > 9999) {
+    const formattedNumber: string = new Intl.NumberFormat('de-DE', {
+      maximumSignificantDigits: 4,
+    }).format(9999);
+    return `${formattedNumber}+`;
+  }
+  return new Intl.NumberFormat('de-DE', {
+    maximumSignificantDigits: 4,
+  }).format(number);
+};
+
 export const FoodCard = ({ data, href }: FoodCardProps) => {
   const { t } = useTranslation('common');
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
-
-  const getFormattedNumber = (number: number): string => {
-    if (number > 9999) {
-      const formattedNumber: string = new Intl.NumberFormat('de-DE', {
-        maximumSignificantDigits: 4,
-      }).format(9999);
-      return `${formattedNumber}+`;
-    }
-    return new Intl.NumberFormat('de-DE', {
-      maximumSignificantDigits: 4,
-    }).format(number);
-  };
 
   return (
     !!data && (

@@ -1,7 +1,7 @@
 import { ModalObject } from '@citrus/hooks';
 import { Button, Group, Modal, Space, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
-import { Trans, useTranslation } from 'next-i18next';
+import { Trans } from 'next-i18next';
 
 type ConfirmModalProps = {
   modal: ModalObject;
@@ -18,7 +18,6 @@ export const ConfirmModal = ({
   confirmText,
   action,
 }: ConfirmModalProps) => {
-  const { t } = useTranslation();
   const { opened, close } = modal;
   const form = useForm({
     initialValues: {

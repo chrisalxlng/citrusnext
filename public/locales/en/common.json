@@ -135,6 +135,10 @@
         },
         "calories": {
           "label": "Calories"
+        },
+        "empty": {
+          "title": "No Ingredients",
+          "subtitle": "Add an ingredient to get started."
         }
       }
     },
@@ -203,6 +207,15 @@
   "modals": {
     "confirm": {
       "confirm_text": "Please type <0>{{text}}</0> to confirm."
+    },
+    "ingredient": {
+      "actions": {
+        "add": "Add Ingredient",
+        "update": "Update Ingredient"
+      },
+      "form": {
+        "quantity": "Quantity"
+      }
     }
   },
   "tooltip": {
@@ -274,7 +287,7 @@
       },
       "grocery_deletion": {
         "title": "Grocery deleted",
-        "message": "{{grocery}} was deleted successfully."
+        "message": "Grocery was deleted successfully."
       },
       "dish_addition": {
         "title": "Dish added",
@@ -286,8 +299,12 @@
       },
       "dish_deletion": {
         "title": "Dish deleted",
-        "message": "{{dish}} was deleted successfully."
+        "message": "Dish was deleted successfully."
       }
     }
+  },
+  "spotlight": {
+    "no_results": "Nothing found...",
+    "search": "Search..."
   }
 }

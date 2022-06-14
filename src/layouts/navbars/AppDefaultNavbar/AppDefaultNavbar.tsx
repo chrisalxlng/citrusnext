@@ -23,9 +23,41 @@ type NavItem = {
   isMain: boolean;
   icon: Icon;
   label: string;
+  description?: string;
   href?: string;
   onClick?: () => void;
 };
+
+export const navItems: NavItem[] = [
+  {
+    isMain: true,
+    icon: Calendar,
+    label: 'pages.today.title',
+    description: 'Track your meals on a daily basis.',
+    href: '/today',
+  },
+  {
+    isMain: true,
+    icon: Grill,
+    label: 'pages.dishes.title',
+    description: 'Get an overview of all your dishes.',
+    href: '/dishes',
+  },
+  {
+    isMain: true,
+    icon: PaperBag,
+    label: 'pages.groceries.title',
+    description: 'Get an overview of all your groceries.',
+    href: '/groceries',
+  },
+  {
+    isMain: false,
+    icon: UserCircle,
+    label: 'pages.account.title',
+    description: 'Manage your profile and account.',
+    href: '/account',
+  },
+];
 
 export const AppDefaultNavbar = ({
   opened,
@@ -37,30 +69,7 @@ export const AppDefaultNavbar = ({
   const { signOut } = useAuth();
 
   const items: NavItem[] = [
-    {
-      isMain: true,
-      icon: Calendar,
-      label: t('pages.today.title'),
-      href: '/today',
-    },
-    {
-      isMain: true,
-      icon: Grill,
-      label: t('pages.dishes.title'),
-      href: '/dishes',
-    },
-    {
-      isMain: true,
-      icon: PaperBag,
-      label: t('pages.groceries.title'),
-      href: '/groceries',
-    },
-    {
-      isMain: false,
-      icon: UserCircle,
-      label: t('pages.account.title'),
-      href: '/account',
-    },
+    ...navItems.map((item) => ({ ...item, label: t(item.label) })),
     {
       isMain: false,
       icon: Logout,
