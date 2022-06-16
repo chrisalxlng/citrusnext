@@ -1,6 +1,6 @@
 import { HEADER_HEIGHT } from '@citrus/constants';
 import { Spotlight } from '@citrus/core';
-import { FooterLayout } from '@citrus/layouts';
+import { FooterLayout, KbdElement } from '@citrus/layouts';
 import { AppDefaultNavbar } from '@citrus/layouts';
 import { AppDefaultHeader } from '@citrus/layouts';
 import { AppShell, Box, Group, useMantineColorScheme } from '@mantine/core';
@@ -17,6 +17,7 @@ type PageLayoutProps = {
   noNavbar?: boolean;
   noFooter?: boolean;
   disableSpotlightMainActions?: boolean;
+  footerKbds?: KbdElement[];
 };
 
 export const PageLayout = ({
@@ -28,6 +29,9 @@ export const PageLayout = ({
   noNavbar = false,
   noFooter = false,
   disableSpotlightMainActions = false,
+  footerKbds = disableSpotlightMainActions
+    ? []
+    : [{ label: 'Open Spotlight', keys: ['mod', 'K'] }],
 }: PageLayoutProps) => {
   const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
   const [navbarOpened, setNavbarOpened] = useState<boolean>(false);
@@ -83,7 +87,7 @@ export const PageLayout = ({
             })}
           >
             <Box p={largerThanBreakpoint ? 30 : 20}>{children}</Box>
-            {!noFooter && <FooterLayout />}
+            {!noFooter && <FooterLayout kbds={footerKbds} />}
           </Group>
         )}
       </AppShell>

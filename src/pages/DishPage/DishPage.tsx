@@ -102,6 +102,9 @@ export const DishPage = ({ dish }: DishPageProps) => {
         }
         noNavbar
         disableSpotlightMainActions
+        footerKbds={[
+          { label: t('pages.dish.form.add_ingredient'), keys: ['mod', 'K'] },
+        ]}
       >
         <Container size={700} ref={focusTrapRef}>
           <Group direction="column" spacing={50} pb="xl">

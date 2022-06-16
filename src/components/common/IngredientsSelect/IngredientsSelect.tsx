@@ -79,7 +79,7 @@ export const IngredientsSelect = ({
       fullWidth
       onClick={toggleSpotlight}
     >
-      Add Ingredient
+      {t('pages.dish.form.add_ingredient')}
     </Button>
   );
 

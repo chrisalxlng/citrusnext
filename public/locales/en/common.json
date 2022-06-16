@@ -139,7 +139,8 @@
         "empty": {
           "title": "No Ingredients",
           "subtitle": "Add an ingredient to get started."
-        }
+        },
+        "add_ingredient": "Add Ingredient"
       }
     },
     "groceries": {
