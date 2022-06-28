@@ -1,11 +1,16 @@
 package com.chrisalxlng.citrusbackend.services;
 
+import com.chrisalxlng.citrusbackend.models.DishResponse;
 import com.chrisalxlng.citrusbackend.models.Meal;
 import com.chrisalxlng.citrusbackend.models.MealDiaryEntry;
+import com.chrisalxlng.citrusbackend.models.MealDiaryEntryResponse;
+import com.chrisalxlng.citrusbackend.models.MealResponse;
 import com.chrisalxlng.citrusbackend.repositories.MealDiaryEntryRepository;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,35 +21,99 @@ import org.springframework.stereotype.Service;
 public class MealDiaryEntryService {
 
   private final MealDiaryEntryRepository mealDiaryEntryRepository;
+  private final DishService dishService;
 
-  public List<MealDiaryEntry> getAllEntries() {
+  public List<MealDiaryEntryResponse> getAllEntries() {
     List<MealDiaryEntry> entries = mealDiaryEntryRepository.findAll();
 
     if (!entries.isEmpty()) {
-      return entries;
+      List<MealDiaryEntryResponse> entriesResponse = entries.stream().map(entry -> {
+        List<Meal> meals = Arrays.asList(entry.getMeals());
+        MealResponse[] mealsResponse = meals.stream().map(meal -> {
+          DishResponse dishResponse = dishService.getDishById(meal.getDishId());
+          MealResponse mealResponse = new MealResponse(dishResponse, meal.getQuantity());
+
+          return mealResponse;
+        }).toArray(size -> new MealResponse[size]);
+
+        MealDiaryEntryResponse mealDiaryEntryResponse = 
+          new MealDiaryEntryResponse(entry.getId(), entry.getDate(), mealsResponse, entry.getUserId());
+
+        return mealDiaryEntryResponse;
+      }).collect(Collectors.toList());
+      return entriesResponse;
     } else return null;
   }
 
-  public MealDiaryEntry getEntryById(String id) {
+  public MealDiaryEntryResponse getEntryById(String id) {
     Optional<MealDiaryEntry> entry = mealDiaryEntryRepository.findMealDiaryEntryById(
       id
     );
 
     if (entry.isPresent()) {
-      return entry.get();
+      MealDiaryEntry diaryEntry = entry.get();
+      List<Meal> mealsList = Arrays.asList(diaryEntry.getMeals());
+      MealResponse[] mealsResponse = mealsList.stream().map(meal -> {
+        DishResponse dishResponse = dishService.getDishById(meal.getDishId());
+        MealResponse mealResponse = new MealResponse(dishResponse, meal.getQuantity());
+
+        return mealResponse;
+      }).toArray(size -> new MealResponse[size]);
+      MealDiaryEntryResponse mealDiaryEntryResponse = 
+        new MealDiaryEntryResponse(diaryEntry.getId(), diaryEntry.getDate(), mealsResponse, diaryEntry.getUserId());
+
+      return mealDiaryEntryResponse;
     } else {
       log.error("Error accessing mealDiaryEntry: MealDiaryEntry not found");
       return null;
     }
   }
 
-  public List<MealDiaryEntry> getEntriesByUserId(String userId) {
+  public MealDiaryEntryResponse getEntryByDate(Date date) {
+    Optional<MealDiaryEntry> entry = mealDiaryEntryRepository.findMealDiaryEntryByDate(
+      date
+    );
+
+    if (entry.isPresent()) {
+      MealDiaryEntry diaryEntry = entry.get();
+      List<Meal> mealsList = Arrays.asList(diaryEntry.getMeals());
+      MealResponse[] mealsResponse = mealsList.stream().map(meal -> {
+        DishResponse dishResponse = dishService.getDishById(meal.getDishId());
+        MealResponse mealResponse = new MealResponse(dishResponse, meal.getQuantity());
+
+        return mealResponse;
+      }).toArray(size -> new MealResponse[size]);
+      MealDiaryEntryResponse mealDiaryEntryResponse = 
+        new MealDiaryEntryResponse(diaryEntry.getId(), diaryEntry.getDate(), mealsResponse, diaryEntry.getUserId());
+
+      return mealDiaryEntryResponse;
+    } else {
+      log.error("Error accessing mealDiaryEntry: MealDiaryEntry not found");
+      return null;
+    }
+  }
+
+  public List<MealDiaryEntryResponse> getEntriesByUserId(String userId) {
     List<MealDiaryEntry> entries = mealDiaryEntryRepository.findMealDiaryEntriesByUserId(
       userId
     );
 
     if (!entries.isEmpty()) {
-      return entries;
+      List<MealDiaryEntryResponse> entriesResponse = entries.stream().map(entry -> {
+        List<Meal> meals = Arrays.asList(entry.getMeals());
+        MealResponse[] mealsResponse = meals.stream().map(meal -> {
+          DishResponse dishResponse = dishService.getDishById(meal.getDishId());
+          MealResponse mealResponse = new MealResponse(dishResponse, meal.getQuantity());
+
+          return mealResponse;
+        }).toArray(size -> new MealResponse[size]);
+
+        MealDiaryEntryResponse mealDiaryEntryResponse = 
+          new MealDiaryEntryResponse(entry.getId(), entry.getDate(), mealsResponse, entry.getUserId());
+
+        return mealDiaryEntryResponse;
+      }).collect(Collectors.toList());
+      return entriesResponse;
     } else return null;
   }
 

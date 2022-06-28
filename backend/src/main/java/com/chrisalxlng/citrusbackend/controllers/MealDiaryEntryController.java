@@ -1,6 +1,7 @@
 package com.chrisalxlng.citrusbackend.controllers;
 
 import com.chrisalxlng.citrusbackend.models.MealDiaryEntry;
+import com.chrisalxlng.citrusbackend.models.MealDiaryEntryResponse;
 import com.chrisalxlng.citrusbackend.services.MealDiaryEntryService;
 import com.mongodb.lang.NonNull;
 import java.net.URI;
@@ -30,14 +31,14 @@ public class MealDiaryEntryController {
   private final MealDiaryEntryService mealDiaryEntryService;
 
   @GetMapping(value = "/diary", produces = "application/json")
-  public ResponseEntity<List<MealDiaryEntry>> getAllEntries() {
+  public ResponseEntity<List<MealDiaryEntryResponse>> getAllEntries() {
     try {
       String userId = SecurityContextHolder
         .getContext()
         .getAuthentication()
         .getPrincipal()
         .toString();
-      List<MealDiaryEntry> entries = mealDiaryEntryService.getEntriesByUserId(
+      List<MealDiaryEntryResponse> entries = mealDiaryEntryService.getEntriesByUserId(
         userId
       );
       if (entries == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,11 +50,11 @@ public class MealDiaryEntryController {
 
   @GetMapping(value = "/diary/{id}", produces = "application/json")
   @PreAuthorize("@authenticationService.hasAccessToDish(#id)")
-  public ResponseEntity<MealDiaryEntry> getEntry(
+  public ResponseEntity<MealDiaryEntryResponse> getEntry(
     @PathVariable @NonNull String id
   ) {
     try {
-      MealDiaryEntry entry = mealDiaryEntryService.getEntryById(id);
+      MealDiaryEntryResponse entry = mealDiaryEntryService.getEntryById(id);
       if (entry == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       log.info("MealDiaryEntry accessed");
       return ResponseEntity.ok().body(entry);
@@ -68,7 +69,7 @@ public class MealDiaryEntryController {
     produces = { "application/json" }
   )
   @PreAuthorize("@authenticationService.hasAccessToMealDiaryEntry(#entry)")
-  public ResponseEntity<MealDiaryEntry> createEntry(
+  public ResponseEntity<MealDiaryEntryResponse> createEntry(
     @RequestBody MealDiaryEntry entry
   ) {
     URI uri = URI.create(
@@ -78,14 +79,16 @@ public class MealDiaryEntryController {
         .toUriString()
     );
     try {
-      MealDiaryEntry entryResponse = mealDiaryEntryService.createEntry(
+      MealDiaryEntry entryRequest = mealDiaryEntryService.createEntry(
         entry.getDate(),
         entry.getMeals(),
         entry.getUserId()
       );
-      if (entryResponse == null) return new ResponseEntity<>(
+      if (entryRequest == null) return new ResponseEntity<>(
         HttpStatus.CONFLICT
       );
+
+      MealDiaryEntryResponse entryResponse = mealDiaryEntryService.getEntryByDate(entry.getDate());
       return ResponseEntity.created(uri).body(entryResponse);
     } catch (Exception exception) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -98,7 +101,7 @@ public class MealDiaryEntryController {
     produces = { "application/json" }
   )
   @PreAuthorize("@authenticationService.hasAccessToMealDiaryEntry(#id)")
-  public ResponseEntity<MealDiaryEntry> updateEntry(
+  public ResponseEntity<MealDiaryEntryResponse> updateEntry(
     @PathVariable @NonNull String id,
     @RequestBody MealDiaryEntry entry
   ) {
@@ -109,15 +112,16 @@ public class MealDiaryEntryController {
         .toUriString()
     );
     try {
-      MealDiaryEntry entryResponse = mealDiaryEntryService.updateEntry(
+      MealDiaryEntry entryRequest = mealDiaryEntryService.updateEntry(
         id,
         entry.getDate(),
         entry.getMeals(),
         entry.getUserId()
       );
-      if (entryResponse == null) return new ResponseEntity<>(
+      if (entryRequest == null) return new ResponseEntity<>(
         HttpStatus.NOT_FOUND
       );
+      MealDiaryEntryResponse entryResponse = mealDiaryEntryService.getEntryById(id);
       return ResponseEntity.created(uri).body(entryResponse);
     } catch (Exception exception) {
       System.out.println(exception);
@@ -127,13 +131,13 @@ public class MealDiaryEntryController {
 
   @DeleteMapping(value = "/diary/{id}")
   @PreAuthorize("@authenticationService.hasAccessToMealDiaryEntry(#id)")
-  public ResponseEntity<HttpStatus> deleteEntry(
+  public ResponseEntity<MealDiaryEntry> deleteEntry(
     @PathVariable @NonNull String id
   ) {
     try {
       MealDiaryEntry entry = mealDiaryEntryService.deleteEntry(id);
       if (entry == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return ResponseEntity.ok().body(entry);
     } catch (Exception exception) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
