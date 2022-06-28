@@ -83,7 +83,6 @@ export const useDish = () => {
     },
     {
       onSuccess: (updatedDish: DishResponse) => {
-        console.log(updatedDish);
         queryClient.setQueryData('dishes', (currentDishes: DishResponse[]) =>
           currentDishes.map((dish: DishResponse) =>
             dish.id === updatedDish.id ? updatedDish : dish

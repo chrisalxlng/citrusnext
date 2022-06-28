@@ -71,8 +71,6 @@ export const IconSelect = <Value extends ValueType>({
   const clickOutsideRef = useClickOutside(() => setPickerOpened(false));
   const itemsRef = useRef<Array<HTMLButtonElement | null>>([]);
 
-  useHotkeys([['K', () => console.log(document.activeElement)]]);
-
   const getNextWindowItem = (
     itemIdx: number,
     itemsRefList: MutableRefObject<HTMLButtonElement[]>,

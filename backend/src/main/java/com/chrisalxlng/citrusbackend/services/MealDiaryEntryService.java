@@ -7,6 +7,7 @@ import com.chrisalxlng.citrusbackend.models.MealDiaryEntryResponse;
 import com.chrisalxlng.citrusbackend.models.MealResponse;
 import com.chrisalxlng.citrusbackend.repositories.MealDiaryEntryRepository;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -114,7 +115,7 @@ public class MealDiaryEntryService {
         return mealDiaryEntryResponse;
       }).collect(Collectors.toList());
       return entriesResponse;
-    } else return null;
+    } else return Collections.emptyList();
   }
 
   public MealDiaryEntry createEntry(Date date, Meal[] meals, String userId) {
