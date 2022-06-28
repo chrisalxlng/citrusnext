@@ -8,6 +8,8 @@ import { Plus } from 'tabler-icons-react';
 type EntityPageLayoutProps = {
   children: ReactNode | ReactNode[];
   title: string;
+  disableSpotlightMainActions?: boolean;
+  footerKbds?: { label: string; keys: string[] }[];
 };
 
 type LoadingProps = {
@@ -16,7 +18,8 @@ type LoadingProps = {
   title: string;
   button: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
 };
 
@@ -27,32 +30,41 @@ type BodyProps = {
     empty: boolean;
     title: string;
     subtitle: string;
+    showBodyTitle?: boolean;
   };
-  title: string;
+  title: string | ReactNode;
   button: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
 };
 
 type HeadProps = {
   children: ReactNode[] | ReactNode;
-  title: string;
+  title: string | ReactNode;
   button: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
 };
 
 const Head = ({ children, title, button }: HeadProps) => (
   <>
     <Group position="apart">
-      <Title order={1}>{title}</Title>
-      <Link href={button.href} passHref>
-        <Button component="a" leftIcon={<Plus size={16} />}>
+      {typeof title === 'string' ? <Title order={1}>{title}</Title> : title}
+      {button.href ? (
+        <Link href={button.href} passHref>
+          <Button component="a" leftIcon={<Plus size={16} />}>
+            {button.label}
+          </Button>
+        </Link>
+      ) : (
+        <Button onClick={button.onClick} leftIcon={<Plus size={16} />}>
           {button.label}
         </Button>
-      </Link>
+      )}
     </Group>
     <Space h={30} />
     {children}
@@ -62,7 +74,19 @@ const Head = ({ children, title, button }: HeadProps) => (
 export const EntityPageLayout = ({
   children,
   title,
-}: EntityPageLayoutProps) => <PageLayout title={title}>{children}</PageLayout>;
+  disableSpotlightMainActions = false,
+  footerKbds = null,
+}: EntityPageLayoutProps) => {
+  return (
+    <PageLayout
+      title={title}
+      disableSpotlightMainActions={disableSpotlightMainActions}
+      footerKbds={footerKbds}
+    >
+      {children}
+    </PageLayout>
+  );
+};
 
 const Loading = ({ children, loading, title, button }: LoadingProps) => (
   <>
@@ -77,17 +101,31 @@ const Loading = ({ children, loading, title, button }: LoadingProps) => (
 const Body = ({ children, loading, emptyState, title, button }: BodyProps) => (
   <>
     {loading ? null : emptyState.empty ? (
-      <EmptyState
-        title={emptyState.title}
-        subtitle={emptyState.subtitle}
-        button={
-          <Link href={button.href} passHref>
-            <Button component="a" leftIcon={<Plus size={16} />}>
-              {button.label}
-            </Button>
-          </Link>
-        }
-      />
+      <>
+        {emptyState.showBodyTitle &&
+          (typeof title === 'string' ? (
+            <Title order={1}>{title}</Title>
+          ) : (
+            title
+          ))}
+        <EmptyState
+          title={emptyState.title}
+          subtitle={emptyState.subtitle}
+          button={
+            button.href ? (
+              <Link href={button.href} passHref>
+                <Button component="a" leftIcon={<Plus size={16} />}>
+                  {button.label}
+                </Button>
+              </Link>
+            ) : (
+              <Button onClick={button.onClick} leftIcon={<Plus size={16} />}>
+                {button.label}
+              </Button>
+            )
+          }
+        />
+      </>
     ) : (
       <Head title={title} button={button}>
         {children}

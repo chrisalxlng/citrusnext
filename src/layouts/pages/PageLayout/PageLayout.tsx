@@ -5,6 +5,7 @@ import { AppDefaultNavbar } from '@citrus/layouts';
 import { AppDefaultHeader } from '@citrus/layouts';
 import { AppShell, Box, Group, useMantineColorScheme } from '@mantine/core';
 import { useHotkeys, useMediaQuery } from '@mantine/hooks';
+import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 import { ReactNode, useState } from 'react';
 
@@ -29,14 +30,16 @@ export const PageLayout = ({
   noNavbar = false,
   noFooter = false,
   disableSpotlightMainActions = false,
-  footerKbds = disableSpotlightMainActions
-    ? []
-    : [{ label: 'Open Spotlight', keys: ['mod', 'K'] }],
+  footerKbds = null,
 }: PageLayoutProps) => {
   const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
+  const { t } = useTranslation();
   const [navbarOpened, setNavbarOpened] = useState<boolean>(false);
   const { toggleColorScheme } = useMantineColorScheme();
   const titleTemplate = `${title} • citrus`;
+  const kbds = footerKbds?.length
+    ? footerKbds
+    : [{ label: t('common.actions.open_spotlight'), keys: ['mod', 'K'] }];
 
   useHotkeys([['mod+.', () => toggleColorScheme()]]);
 
@@ -87,7 +90,7 @@ export const PageLayout = ({
             })}
           >
             <Box p={largerThanBreakpoint ? 30 : 20}>{children}</Box>
-            {!noFooter && <FooterLayout kbds={footerKbds} />}
+            {!noFooter && <FooterLayout kbds={kbds} />}
           </Group>
         )}
       </AppShell>

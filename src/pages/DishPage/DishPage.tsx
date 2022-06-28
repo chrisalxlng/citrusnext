@@ -1,6 +1,6 @@
 import { Card, IconSelect, SplitButton } from '@citrus/core';
 import { useAuth, useDish } from '@citrus/hooks';
-import { Dish, DishForm, Unit } from '@citrus/types';
+import { DishResponse, DishForm, Unit } from '@citrus/types';
 import { FoodIcon } from '@citrus/icons';
 import { AppCloseHeader, PageLayout } from '@citrus/layouts';
 import {
@@ -20,14 +20,16 @@ import { createArray } from '@citrus/util';
 import { IngredientsSelect } from '@citrus/core';
 
 type DishPageProps = {
-  dish?: Dish;
+  dish?: DishResponse;
 };
 
 export const DishPage = ({ dish }: DishPageProps) => {
   const { t } = useTranslation('common');
   const isCreatePage: boolean = !dish;
 
-  const title: string = isCreatePage ? 'New Dish' : 'Update Dish';
+  const title: string = isCreatePage
+    ? t('pages.dish.title.new')
+    : t('pages.dish.title.update');
   const { currentUser } = useAuth();
   const { add, update, remove } = useDish();
   const focusTrapRef = useFocusTrap();

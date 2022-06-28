@@ -13,96 +13,106 @@ export enum MacroNutrientTag {
   BALANCED_MACROS = 'balanced_macros',
 }
 
-export type CreateGrocery = {
+type MacroNutrients = {
+  carbohydrates: number;
+  fats: number;
+  proteins: number;
+};
+
+type GroceryRequest = {
   title: string;
   iconId: number;
   unit: Unit;
   portionSize: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
+  macroNutrientsPer100: MacroNutrients;
   userId: string;
 };
 
-export type UpdateGrocery = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
-  userId: string;
-};
-
-export type Grocery = {
+export type GroceryResponse = {
   id: string;
   title: string;
   iconId: number;
   unit: Unit;
   portionSize: number;
   calories: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
+  macroNutrientsPer100: MacroNutrients;
   macroNutrientTags: MacroNutrientTag[];
   userId: string;
 };
 
-export type CreateDish = {
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  ingredients: { groceryId: string; quantity: number }[];
-  userId: string;
-};
+export type CreateGrocery = GroceryRequest;
 
-export type UpdateDish = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  ingredients: { groceryId: string; quantity: number }[];
-  userId: string;
-};
+export type UpdateGrocery = CreateGrocery & { id: string };
 
-export type DishForm = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  ingredients: { grocery: Grocery; quantity: number }[];
-  userId: string;
-};
-
-export type Dish = {
-  id: string;
-  title: string;
-  iconId: number;
-  unit: Unit;
-  portionSize: number;
-  calories: number;
-  macroNutrientsPer100: {
-    carbohydrates: number;
-    fats: number;
-    proteins: number;
-  };
-  macroNutrientTags: MacroNutrientTag[];
-  ingredients: { grocery: Grocery; quantity: number }[];
-  userId: string;
-};
-
-export type Ingredient = {
-  grocery: Grocery;
+type IngredientRequest = {
+  groceryId: string;
   quantity: number;
 };
+
+export type IngredientResponse = {
+  grocery: GroceryResponse;
+  quantity: number;
+};
+
+type DishRequest = {
+  title: string;
+  iconId: number;
+  unit: Unit;
+  portionSize: number;
+  ingredients: IngredientRequest[];
+  userId: string;
+};
+
+export type DishResponse = {
+  id: string;
+  title: string;
+  iconId: number;
+  unit: Unit;
+  portionSize: number;
+  calories: number;
+  macroNutrientsPer100: MacroNutrients;
+  macroNutrientTags: MacroNutrientTag[];
+  ingredients: IngredientResponse[];
+  userId: string;
+};
+
+export type CreateDish = DishRequest;
+
+export type UpdateDish = CreateDish & { id: string };
+
+export type DishForm = {
+  id?: string;
+  title: string;
+  iconId: number;
+  unit: Unit;
+  portionSize: number;
+  ingredients: IngredientResponse[];
+  userId: string;
+};
+
+type MealRequest = {
+  dishId: string;
+  quantity: number;
+};
+
+export type MealResponse = {
+  dish: DishResponse;
+  quantity: number;
+};
+
+type MealDiaryEntryRequest = {
+  date: Date;
+  meals: MealRequest[];
+  userId: string;
+};
+
+export type MealDiaryEntryResponse = {
+  id: string;
+  date: Date;
+  meals: MealResponse[];
+  userId: string;
+};
+
+export type CreateMealDiaryEntry = MealDiaryEntryRequest;
+
+export type UpdateMealDiaryEntry = MealDiaryEntryRequest & { id: string };

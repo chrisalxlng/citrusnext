@@ -13,7 +13,7 @@ import { useNotification, useTokenRequest } from '@citrus/hooks';
 import { NotificationTypes } from '../useNotification/useNotification';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { CreateGrocery, Grocery, UpdateGrocery } from '@citrus/types';
+import { CreateGrocery, GroceryResponse, UpdateGrocery } from '@citrus/types';
 
 export const useGrocery = () => {
   const { t } = useTranslation();
@@ -26,11 +26,11 @@ export const useGrocery = () => {
   const showNotification = useNotification();
   const router = useRouter();
 
-  const groceries: UseQueryResult<Grocery[]> = useQuery(
+  const groceries: UseQueryResult<GroceryResponse[]> = useQuery(
     'groceries',
     async () => {
       const instance: AxiosInstance = await getInstance();
-      const { data }: AxiosResponse<Grocery[]> = await instance.get(
+      const { data }: AxiosResponse<GroceryResponse[]> = await instance.get(
         `${API_URL}${GROCERIES_ROUTE}`
       );
       setCookie('grocery-count', data.length || 1), { path: '/app' };
@@ -51,10 +51,13 @@ export const useGrocery = () => {
         return data;
       },
       {
-        onSuccess: (addedGrocery: Grocery) => {
+        onSuccess: (addedGrocery: GroceryResponse) => {
           queryClient.setQueryData(
             'groceries',
-            (currentGroceries: Grocery[]) => [...currentGroceries, addedGrocery]
+            (currentGroceries: GroceryResponse[]) => [
+              ...currentGroceries,
+              addedGrocery,
+            ]
           );
           setCount(count + 1);
           showNotification({
@@ -86,11 +89,13 @@ export const useGrocery = () => {
       return data;
     },
     {
-      onSuccess: (updatedGrocery: Grocery) => {
-        queryClient.setQueryData('groceries', (currentGroceries: Grocery[]) =>
-          currentGroceries.map((grocery: Grocery) =>
-            grocery.id === updatedGrocery.id ? updatedGrocery : grocery
-          )
+      onSuccess: (updatedGrocery: GroceryResponse) => {
+        queryClient.setQueryData(
+          'groceries',
+          (currentGroceries: GroceryResponse[]) =>
+            currentGroceries.map((grocery: GroceryResponse) =>
+              grocery.id === updatedGrocery.id ? updatedGrocery : grocery
+            )
         );
         showNotification({
           title: t('notifications.success.grocery_update.title'),
@@ -120,9 +125,11 @@ export const useGrocery = () => {
       return data;
     },
     {
-      onSuccess: (grocery: Grocery) => {
-        queryClient.setQueryData('groceries', (currentGroceries: Grocery[]) =>
-          currentGroceries.filter((g: Grocery) => g.id !== grocery.id)
+      onSuccess: (grocery: GroceryResponse) => {
+        queryClient.setQueryData(
+          'groceries',
+          (currentGroceries: GroceryResponse[]) =>
+            currentGroceries.filter((g: GroceryResponse) => g.id !== grocery.id)
         );
         setCount(count - 1);
         showNotification({

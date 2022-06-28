@@ -2,7 +2,8 @@
   "common": {
     "actions": {
       "save": "Save",
-      "sign_out": "Sign Out"
+      "sign_out": "Sign Out",
+      "open_spotlight": "Open Spotlight"
     },
     "form": {
       "inputs": {
@@ -27,7 +28,9 @@
         "ml": "{{amount}} ml"
       },
       "g": "Grams",
-      "ml": "Mililiters"
+      "ml": "Mililiters",
+      "g_short": "g",
+      "kcal_short": "kcal"
     },
     "macro_tags": {
       "high_carb": "High Carb",
@@ -80,7 +83,15 @@
       }
     },
     "today": {
-      "title": "Today"
+      "title": "Today",
+      "meal_diary": {
+        "title": "Meal Diary",
+        "new": "New Meal",
+        "empty": {
+          "title": "No Meals",
+          "subtitle": "Add your first meal for the day!"
+        }
+      }
     },
     "dishes": {
       "title": "Dishes",
@@ -217,6 +228,16 @@
       "form": {
         "quantity": "Quantity"
       }
+    },
+    "meal": {
+      "actions": {
+        "add": "Add Meal",
+        "update": "Update Meal",
+        "delete": "Delete Meal"
+      },
+      "form": {
+        "quantity": "Quantity"
+      }
     }
   },
   "tooltip": {
@@ -269,6 +290,18 @@
       "dish_deletion": {
         "title": "Dish Deletion Error",
         "message": "Dish could not be deleted."
+      },
+      "diary_entry_addition": {
+        "title": "Meal Diary Entry Addition Error",
+        "message": "Meal Diary Entry could not be added."
+      },
+      "diary_entry_update": {
+        "title": "Meal Diary Entry Update Error",
+        "message": "Meal Diary Entry could not be updated."
+      },
+      "diary_entry_deletion": {
+        "title": "Meal Diary Entry Deletion Error",
+        "message": "Meal Diary Entry could not be deleted."
       }
     },
     "success": {
@@ -301,6 +334,18 @@
       "dish_deletion": {
         "title": "Dish deleted",
         "message": "Dish was deleted successfully."
+      },
+      "diary_entry_addition": {
+        "title": "Meal Diary Entry added",
+        "message": "Meal Diary Entry was added succesfully."
+      },
+      "diary_entry_update": {
+        "title": "Meal Diary Entry updated",
+        "message": "Meal Diary Entry was updated successfully."
+      },
+      "diary_entry_deletion": {
+        "title": "Meal Diary Entry deleted",
+        "message": "Meal Diary Entry was deleted successfully."
       }
     }
   },

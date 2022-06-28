@@ -13,7 +13,7 @@ import { useNotification, useTokenRequest } from '@citrus/hooks';
 import { NotificationTypes } from '../useNotification/useNotification';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { CreateDish, Dish, UpdateDish } from '@citrus/types';
+import { CreateDish, DishResponse, UpdateDish } from '@citrus/types';
 
 export const useDish = () => {
   const { t } = useTranslation();
@@ -26,11 +26,11 @@ export const useDish = () => {
   const showNotification = useNotification();
   const router = useRouter();
 
-  const dishes: UseQueryResult<Dish[]> = useQuery(
+  const dishes: UseQueryResult<DishResponse[]> = useQuery(
     'dishes',
     async () => {
       const instance: AxiosInstance = await getInstance();
-      const { data }: AxiosResponse<Dish[]> = await instance.get(
+      const { data }: AxiosResponse<DishResponse[]> = await instance.get(
         `${API_URL}${DISHES_ROUTE}`
       );
       setCookie('dish-count', data.length || 1), { path: '/app' };
@@ -47,8 +47,8 @@ export const useDish = () => {
       return data;
     },
     {
-      onSuccess: (addedDish: Dish) => {
-        queryClient.setQueryData('dishes', (currentDishes: Dish[]) => [
+      onSuccess: (addedDish: DishResponse) => {
+        queryClient.setQueryData('dishes', (currentDishes: DishResponse[]) => [
           ...currentDishes,
           addedDish,
         ]);
@@ -82,9 +82,10 @@ export const useDish = () => {
       return data;
     },
     {
-      onSuccess: (updatedDish: Dish) => {
-        queryClient.setQueryData('dishes', (currentDishes: Dish[]) =>
-          currentDishes.map((dish: Dish) =>
+      onSuccess: (updatedDish: DishResponse) => {
+        console.log(updatedDish);
+        queryClient.setQueryData('dishes', (currentDishes: DishResponse[]) =>
+          currentDishes.map((dish: DishResponse) =>
             dish.id === updatedDish.id ? updatedDish : dish
           )
         );
@@ -114,9 +115,9 @@ export const useDish = () => {
       return data;
     },
     {
-      onSuccess: (dish: Dish) => {
-        queryClient.setQueryData('dishes', (currentDishes: Dish[]) =>
-          currentDishes.filter((d: Dish) => d.id !== dish.id)
+      onSuccess: (dish: DishResponse) => {
+        queryClient.setQueryData('dishes', (currentDishes: DishResponse[]) =>
+          currentDishes.filter((d: DishResponse) => d.id !== dish.id)
         );
         setCount(count - 1);
         showNotification({

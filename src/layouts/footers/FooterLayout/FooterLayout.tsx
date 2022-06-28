@@ -30,12 +30,12 @@ export const FooterLayout = ({ kbds = [] }: FooterLayoutProps) => {
       <Group>
         <Group spacing={5}>
           {keys.map((key, index) => (
-            <>
+            <Group key={index} spacing={5}>
               {index > 0 ? <Text size="xs">+</Text> : null}
               <Kbd py={0} sx={{ fontSize: 12 }}>
                 {key}
               </Kbd>
-            </>
+            </Group>
           ))}
         </Group>
         <Text size="xs">{kbd.label}</Text>
@@ -49,8 +49,8 @@ export const FooterLayout = ({ kbds = [] }: FooterLayoutProps) => {
       <Group p="xl" position="apart">
         <Group spacing={50}>
           {['macos', 'windows', 'linux'].includes(os) &&
-            [COLOR_SCHEME_KBD_ELEMENT, ...kbds].map((kbd) => (
-              <KbdElement label={kbd.label} keys={kbd.keys} />
+            [COLOR_SCHEME_KBD_ELEMENT, ...kbds].map((kbd, index) => (
+              <KbdElement key={index} label={kbd.label} keys={kbd.keys} />
             ))}
         </Group>
         <Text size="xs">&copy; {currentYear} Christopher Lang</Text>

@@ -11,9 +11,11 @@ export * from './common/SplitButton/SplitButton';
 export * from './common/EmptyState/EmptyState';
 export * from './common/IngredientsSelect/IngredientsSelect';
 export * from './common/Spotlight/Spotlight';
+export * from './common/DateControl/DateControl';
+export * from './common/MealSelect/MealSelect';
 
 export * from './modals/ConfirmModal/ConfirmModal';
-export * from './modals/IngredientModal/IngredientModal';
+export * from './modals/FoodQuantityModal/FoodQuantityModal';
 
 export * from './cards/Card/Card';
 export * from './cards/FoodCard/FoodCard';

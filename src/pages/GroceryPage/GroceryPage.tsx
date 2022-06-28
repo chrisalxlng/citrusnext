@@ -30,7 +30,9 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
   const { t } = useTranslation('common');
   const isCreatePage: boolean = !grocery;
 
-  const title: string = isCreatePage ? 'New Grocery' : 'Update Grocery';
+  const title: string = isCreatePage
+    ? t('pages.grocery.title.new')
+    : t('pages.grocery.title.update');
   const { currentUser } = useAuth();
   const { add, update, remove } = useGrocery();
   const focusTrapRef = useFocusTrap();

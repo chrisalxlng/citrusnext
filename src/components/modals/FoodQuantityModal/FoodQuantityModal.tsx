@@ -1,41 +1,46 @@
-import { MacroNutrientBadge } from '@citrus/core';
+import { MacroNutrientBadge, SplitButton } from '@citrus/core';
 import { ModalObject } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
-import { Ingredient } from '@citrus/types';
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  NumberInput,
-  Space,
-  Text,
-} from '@mantine/core';
+import { IngredientResponse, MealResponse } from '@citrus/types';
+import { Box, Group, Modal, NumberInput, Space, Text } from '@mantine/core';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
+import { Trash } from 'tabler-icons-react';
 
-export type IngredientModalType = 'add' | 'update';
+export type FoodQuantityModalType = 'add' | 'update';
 
-type IngredientModalProps = {
+type FoodType = IngredientResponse | MealResponse;
+
+type FoodQuantityModalProps<Food extends FoodType> = {
   modal: ModalObject;
-  type: IngredientModalType;
-  ingredient: Ingredient;
-  onSubmit: (ingredient: Ingredient) => void;
+  type: FoodQuantityModalType;
+  labels: {
+    add: string;
+    update: string;
+    delete?: string;
+  };
+  food: Food;
+  onSubmit: (food: Food) => void;
+  onDelete?: (id: string) => void;
 };
 
 const MAX_MACRO_NUTRIENT_BADGES = 2;
 
-export const IngredientModal = ({
+export const FoodQuantityModal = <Food extends FoodType>({
   modal,
   type,
-  ingredient,
+  labels,
+  food,
   onSubmit,
-}: IngredientModalProps) => {
+  onDelete = null,
+}: FoodQuantityModalProps<Food>) => {
   const { t } = useTranslation();
   const { opened, close } = modal;
-  const [quantity, setQuantity] = useState<number>(ingredient.quantity);
+  const [quantity, setQuantity] = useState<number>(food.quantity);
+  const { id, iconId, macroNutrientTags, title } =
+    'grocery' in food ? food?.grocery : food?.dish;
 
-  useEffect(() => setQuantity(ingredient.quantity), [opened]);
+  useEffect(() => setQuantity(food.quantity), [opened]);
 
   return (
     <Modal
@@ -43,29 +48,25 @@ export const IngredientModal = ({
       onClose={close}
       centered
       title={
-        <Text weight={500}>
-          {type === 'add'
-            ? t('modals.ingredient.actions.add')
-            : t('modals.ingredient.actions.update')}
-        </Text>
+        <Text weight={500}>{type === 'add' ? labels.add : labels.update}</Text>
       }
     >
       <form
         onSubmit={() => {
-          onSubmit({ ...ingredient, quantity });
+          onSubmit({ ...food, quantity });
           close();
         }}
       >
         <Space h={10} />
         <Group position="apart" px={10}>
           <Group>
-            <FoodIcon size={24} id={ingredient.grocery.iconId} />
+            <FoodIcon size={24} id={iconId} />
             <Group direction="column" spacing={5} align="flex-start">
               <Text size="sm" weight={500}>
-                {ingredient.grocery.title}
+                {title}
               </Text>
               <Group spacing={10} noWrap>
-                {ingredient.grocery.macroNutrientTags
+                {macroNutrientTags
                   ?.slice(0, MAX_MACRO_NUTRIENT_BADGES)
                   .map((tag) => (
                     <MacroNutrientBadge key={tag} tag={tag} />
@@ -92,16 +93,29 @@ export const IngredientModal = ({
         </Group>
         <Space h={50} />
         <Group position="right">
-          <Button
+          <SplitButton
             onClick={() => {
-              onSubmit({ ...ingredient, quantity });
+              onSubmit({ ...food, quantity });
               close();
             }}
+            options={
+              labels.delete &&
+              onDelete &&
+              type === 'update' && [
+                {
+                  label: labels.delete,
+                  color: 'red',
+                  icon: <Trash size={14} />,
+                  onClick: () => {
+                    onDelete(id);
+                    close();
+                  },
+                },
+              ]
+            }
           >
-            {type === 'add'
-              ? t('modals.ingredient.actions.add')
-              : t('modals.ingredient.actions.update')}
-          </Button>
+            {type === 'add' ? labels.add : labels.update}
+          </SplitButton>
         </Group>
       </form>
     </Modal>

@@ -1,11 +1,7 @@
-import {
-  IngredientModal,
-  IngredientModalType,
-  getFormattedNumber,
-} from '@citrus/core';
+import { FoodQuantityModal, FoodQuantityModalType } from '@citrus/core';
 import { useGrocery, useModal } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
-import { Ingredient, Unit } from '@citrus/types';
+import { IngredientResponse, Unit } from '@citrus/types';
 import {
   ActionIcon,
   Box,
@@ -22,10 +18,11 @@ import { useEffect, MouseEvent } from 'react';
 import { Plus, Trash } from 'tabler-icons-react';
 import { EmptyState } from '@citrus/core';
 import { useTranslation } from 'next-i18next';
+import { getFormattedNumber } from '@citrus/util';
 
 type IngredientsSelectProps = {
-  ingredients: Ingredient[];
-  onChange?: (ingredients: Ingredient[]) => void;
+  ingredients: IngredientResponse[];
+  onChange?: (ingredients: IngredientResponse[]) => void;
 };
 
 export const IngredientsSelect = ({
@@ -37,8 +34,8 @@ export const IngredientsSelect = ({
   const { opened, toggleSpotlight, registerActions } = useSpotlight();
   const { groceries } = useGrocery();
   const [modal, openModal, data, type] = useModal<
-    IngredientModalType,
-    Ingredient
+    FoodQuantityModalType,
+    IngredientResponse
   >();
   const isDarkTheme = colorScheme === 'dark';
 
@@ -175,10 +172,14 @@ export const IngredientsSelect = ({
   return (
     <>
       {data && (
-        <IngredientModal
+        <FoodQuantityModal<IngredientResponse>
           modal={modal}
           type={type}
-          ingredient={data}
+          labels={{
+            add: t('modals.ingredient.actions.add'),
+            update: t('modals.ingredient.actions.update'),
+          }}
+          food={data}
           onSubmit={(ingredient) => {
             const isNewIngredient = ingredients.some(
               (ing) => ing.grocery.id === ingredient.grocery.id

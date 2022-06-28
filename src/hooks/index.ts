@@ -4,3 +4,4 @@ export * from './useNotification/useNotification';
 export * from './useModal/useModal';
 export * from './useGrocery/useGrocery';
 export * from './useDish/useDish';
+export * from './useMealDiary/useMealDiary';
