@@ -58,7 +58,9 @@ export const IngredientsSelect = ({
       (grocery) => ({
         id: grocery.id,
         title: grocery.title,
-        description: `${grocery.portionSize} ${grocery.unit} • ${grocery.calories} kcal`,
+        description: `${grocery.portionSize} ${
+          grocery.unit
+        } • ${getCalorieLabel(grocery.calories.toString())}`,
         onTrigger: () => {
           openModal({
             data: { grocery, quantity: grocery.portionSize },

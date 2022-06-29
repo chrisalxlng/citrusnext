@@ -113,20 +113,20 @@ export const TodayPage = () => {
       <OnboardingDialog
         dialog={dialog}
         visible={!groceriesAvailable}
-        title="No groceries yet"
-        description="Add your first grocery to get started."
+        title={t('onboarding.groceries.title')}
+        description={t('onboarding.groceries.description')}
         button={{
-          label: 'Get started',
+          label: t('onboarding.groceries.button_label'),
           href: '/app/groceries/new',
         }}
       />
       <OnboardingDialog
         dialog={dialog}
         visible={groceriesAvailable && !dishesAvailable}
-        title="No dishes yet"
-        description="Add your first dish to get started tracking your diet."
+        title={t('onboarding.dishes.title')}
+        description={t('onboarding.dishes.description')}
         button={{
-          label: 'Add Dish',
+          label: t('onboarding.dishes.button_label'),
           href: '/app/dishes/new',
         }}
       />

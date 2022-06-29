@@ -1,17 +1,14 @@
-import { ColorSchemeToggle } from '@citrus/core';
 import { UnauthenticatedPageLayout } from '@citrus/layouts';
 import {
-  Box,
   Button,
   Container,
   createStyles,
   Group,
   Image,
   Text,
-  Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useRouter } from 'next/router';
+import { Trans, useTranslation } from 'next-i18next';
 
 const BREAKPOINT = '@media (max-width: 755px)';
 
@@ -77,7 +74,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
-  githubControl: {
+  signInControl: {
     borderWidth: 2,
     borderColor:
       theme.colorScheme === 'dark' ? 'transparent' : theme.colors.dark[9],
@@ -95,6 +92,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export const LandingPage = () => {
+  const { t } = useTranslation();
   const { classes, cx } = useStyles();
   const theme = useMantineTheme();
 
@@ -103,22 +101,22 @@ export const LandingPage = () => {
       <div className={classes.wrapper}>
         <Container size={700} className={classes.inner}>
           <h1 className={classes.title}>
-            A{' '}
-            <Text
-              component="span"
-              variant="gradient"
-              gradient={{ from: 'yellow', to: 'orange' }}
-              inherit
-            >
-              healthier diet
-            </Text>{' '}
-            by keeping track of your daily meals
+            <Trans
+              i18nKey="pages.landing.title"
+              defaults="A <0>healthier diet</0> by keeping track of your daily meals"
+              components={[
+                <Text
+                  component="span"
+                  variant="gradient"
+                  gradient={{ from: 'yellow', to: 'orange' }}
+                  inherit
+                />,
+              ]}
+            />
           </h1>
 
           <Text className={classes.description} color="dimmed">
-            Track your daily meals with ease - citrus allows you to create
-            dishes by combining different groceries and ultimately track these
-            meals on a daily basis.
+            {t('pages.landing.subtitle')}
           </Text>
 
           <Group className={classes.controls}>
@@ -130,7 +128,7 @@ export const LandingPage = () => {
               variant="gradient"
               gradient={{ from: 'yellow', to: 'orange' }}
             >
-              Register
+              {t('common.actions.register')}
             </Button>
 
             <Button
@@ -138,10 +136,10 @@ export const LandingPage = () => {
               href="/sign-in"
               size="xl"
               variant="outline"
-              className={cx(classes.control, classes.githubControl)}
+              className={cx(classes.control, classes.signInControl)}
               color={theme.colorScheme === 'dark' ? 'gray' : 'dark'}
             >
-              Sign In
+              {t('common.actions.sign_in')}
             </Button>
           </Group>
         </Container>
@@ -156,11 +154,10 @@ export const LandingPage = () => {
         >
           <Group direction="column" sx={{ flex: '1 1', minWidth: 200 }} py="md">
             <Text weight={700} size="xl">
-              Dark Mode
+              {t('pages.landing.features.dark_mode.title')}
             </Text>
             <Text color="dimmed" size="sm">
-              Switch between light and dark mode whenever you wish! All parts of
-              the application are designed to support both modes.
+              {t('pages.landing.features.dark_mode.description')}
             </Text>
           </Group>
           <Image
@@ -179,11 +176,10 @@ export const LandingPage = () => {
         >
           <Group direction="column" sx={{ flex: '1 1', minWidth: 200 }} py="md">
             <Text weight={700} size="xl">
-              Intuitive Forms
+              {t('pages.landing.features.intuitive_forms.title')}
             </Text>
             <Text color="dimmed" size="sm">
-              Add, update or delete groceries and dishes quickly by filling out
-              intuitive forms.
+              {t('pages.landing.features.intuitive_forms.description')}
             </Text>
           </Group>
           <Image
@@ -202,12 +198,10 @@ export const LandingPage = () => {
         >
           <Group direction="column" sx={{ flex: '1 1', minWidth: 200 }} py="md">
             <Text weight={700} size="xl">
-              Mobile Support
+              {t('pages.landing.features.mobile_support.title')}
             </Text>
             <Text color="dimmed" size="sm">
-              Track your meals on your desktop or when you're on the go! All
-              parts of the application are designed to work on both desktop and
-              mobile environments.
+              {t('pages.landing.features.mobile_support.description')}
             </Text>
           </Group>
           <Group spacing={50} position="center">

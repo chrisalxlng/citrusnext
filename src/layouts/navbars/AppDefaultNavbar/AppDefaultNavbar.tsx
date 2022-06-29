@@ -33,28 +33,28 @@ export const navItems: NavItem[] = [
     isMain: true,
     icon: Calendar,
     label: 'pages.today.title',
-    description: 'Track your meals on a daily basis.',
+    description: 'pages.today.description',
     href: '/today',
   },
   {
     isMain: true,
     icon: Grill,
     label: 'pages.dishes.title',
-    description: 'Get an overview of all your dishes.',
+    description: 'pages.dishes.description',
     href: '/dishes',
   },
   {
     isMain: true,
     icon: PaperBag,
     label: 'pages.groceries.title',
-    description: 'Get an overview of all your groceries.',
+    description: 'pages.groceries.description',
     href: '/groceries',
   },
   {
     isMain: false,
     icon: UserCircle,
     label: 'pages.account.title',
-    description: 'Manage your profile and account.',
+    description: 'pages.account.description',
     href: '/account',
   },
 ];
@@ -69,7 +69,11 @@ export const AppDefaultNavbar = ({
   const { signOut } = useAuth();
 
   const items: NavItem[] = [
-    ...navItems.map((item) => ({ ...item, label: t(item.label) })),
+    ...navItems.map((item) => ({
+      ...item,
+      label: t(item.label),
+      description: t(item.description),
+    })),
     {
       isMain: false,
       icon: Logout,

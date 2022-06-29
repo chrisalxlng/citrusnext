@@ -3,7 +3,6 @@ import { ColorSchemeToggle } from '@citrus/core';
 import { LogoIcon, LogoVariants } from '@citrus/icons';
 import { Group, Header, UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
-import React from 'react';
 
 export const DefaultHeader = () => {
   const router = useRouter();

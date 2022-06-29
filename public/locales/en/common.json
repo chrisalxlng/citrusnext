@@ -3,7 +3,10 @@
     "actions": {
       "save": "Save",
       "sign_out": "Sign Out",
-      "open_spotlight": "Open Spotlight"
+      "open_spotlight": "Open Spotlight",
+      "confirm": "Confirm",
+      "register": "Register",
+      "sign_in": "Sign In"
     },
     "form": {
       "inputs": {
@@ -63,6 +66,7 @@
     },
     "account": {
       "title": "Account",
+      "description": "Manage your profile and account.",
       "helper": {
         "profile": {
           "title": "Your Profile",
@@ -84,6 +88,7 @@
     },
     "today": {
       "title": "Today",
+      "description": "Track your meals on a daily basis.",
       "meal_diary": {
         "title": "Meal Diary",
         "new": "New Meal",
@@ -95,6 +100,7 @@
     },
     "dishes": {
       "title": "Dishes",
+      "description": "Get an overview of all your dishes.",
       "new": "New Dish",
       "empty": {
         "title": "No Dishes",
@@ -156,6 +162,7 @@
     },
     "groceries": {
       "title": "Groceries",
+      "description": "Get an overview of all your groceries.",
       "new": "New Grocery",
       "empty": {
         "title": "No Groceries",
@@ -207,6 +214,24 @@
         },
         "calories": {
           "label": "Calories"
+        }
+      }
+    },
+    "landing": {
+      "title": "A <0>healthier diet</0> by keeping track of your daily meals",
+      "subtitle": "Track your daily meals with ease - citrus allows you to create dishes by combining different groceries and ultimately track these meals on a daily basis.",
+      "features": {
+        "dark_mode": {
+          "title": "Dark mode",
+          "description": "Switch between light and dark mode whenever you wish! All parts of the application are designed to support both modes."
+        },
+        "intuitive_forms": {
+          "title": "Intuitive Forms",
+          "description": "Add, update or delete groceries and dishes quickly by filling out intuitive forms."
+        },
+        "mobile_support": {
+          "title": "Mobile Support",
+          "description": "Track your meals on your desktop or when you're on the go! All parts of the application are designed to work on both desktop and mobile environments."
         }
       }
     }
@@ -352,5 +377,17 @@
   "spotlight": {
     "no_results": "Nothing found...",
     "search": "Search..."
+  },
+  "onboarding": {
+    "groceries": {
+      "title": "No groceries yet",
+      "description": "Add your first grocery to get started.",
+      "button_label": "Get started"
+    },
+    "dishes": {
+      "title": "No dishes yet",
+      "description": "Add your first dish to get started tracking your diet.",
+      "button_label": "Add Dish"
+    }
   }
 }

@@ -28,10 +28,10 @@ export const DishesPage = () => {
       <OnboardingDialog
         dialog={dialog}
         visible={!groceriesAvailable}
-        title="No groceries yet"
-        description="Add your first grocery to get started."
+        title={t('onboarding.groceries.title')}
+        description={t('onboarding.groceries.description')}
         button={{
-          label: 'Get started',
+          label: t('onboarding.groceries.button_label'),
           href: '/app/groceries/new',
         }}
       />

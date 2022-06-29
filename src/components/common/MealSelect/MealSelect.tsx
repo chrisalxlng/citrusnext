@@ -2,6 +2,7 @@ import { useDish } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
 import { MealResponse } from '@citrus/types';
 import { SpotlightAction, useSpotlight } from '@mantine/spotlight';
+import { useTranslation } from 'next-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 
 type MealSelectProps = {
@@ -19,8 +20,12 @@ export const MealSelect = ({
   dishesAvailable,
   setDishesAvailable,
 }: MealSelectProps) => {
+  const { t } = useTranslation();
   const { opened, registerActions } = useSpotlight();
   const { dishes } = useDish();
+
+  const getCalorieLabel = (amount: string) =>
+    t('common.units.amount.kcal', { amount });
 
   useEffect(() => {
     if (!dishesAvailable) return;
@@ -29,7 +34,9 @@ export const MealSelect = ({
       .map((dish) => ({
         id: dish.id,
         title: dish.title,
-        description: `${dish.portionSize} ${dish.unit} • ${dish.calories} kcal`,
+        description: `${dish.portionSize} ${dish.unit} • ${getCalorieLabel(
+          dish.calories.toString()
+        )}`,
         onTrigger: () => {
           openModal({
             data: { dish, quantity: dish.portionSize },
