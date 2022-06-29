@@ -73,7 +73,7 @@ export const IngredientsSelect = ({
 
   useEffect(() => {
     setGroceriesAvailable(
-      !groceries.data?.filter(
+      !!groceries.data?.filter(
         (grocery) =>
           !ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
       ).length
@@ -86,7 +86,7 @@ export const IngredientsSelect = ({
       leftIcon={<Plus size={16} />}
       fullWidth
       onClick={toggleSpotlight}
-      disabled={groceriesAvailable}
+      disabled={!groceriesAvailable}
     >
       {t('pages.dish.form.add_ingredient')}
     </Button>

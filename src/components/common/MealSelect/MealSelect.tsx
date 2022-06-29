@@ -8,20 +8,22 @@ type MealSelectProps = {
   meals: MealResponse[];
   date: Date;
   openModal: (any) => void;
-  setAvailableDishes: Dispatch<SetStateAction<boolean>>;
+  dishesAvailable: boolean;
+  setDishesAvailable: Dispatch<SetStateAction<boolean>>;
 };
 
 export const MealSelect = ({
   meals,
   date,
   openModal,
-  setAvailableDishes,
+  dishesAvailable,
+  setDishesAvailable,
 }: MealSelectProps) => {
   const { opened, registerActions } = useSpotlight();
   const { dishes } = useDish();
 
   useEffect(() => {
-    if (!meals) return;
+    if (!dishesAvailable) return;
     const mealActions: SpotlightAction[] = dishes.data
       ?.filter((dish) => !meals.map((meal) => meal.dish.id).includes(dish.id))
       .map((dish) => ({
@@ -40,7 +42,7 @@ export const MealSelect = ({
   }, [dishes.isFetched, opened]);
 
   useEffect(() => {
-    setAvailableDishes(
+    setDishesAvailable(
       !!dishes.data?.filter(
         (dish) => !meals.map((meal) => meal.dish.id).includes(dish.id)
       ).length

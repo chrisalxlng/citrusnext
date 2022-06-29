@@ -30,7 +30,7 @@ export const TodayPage = () => {
   const { mealDiaryEntries, add, update, remove } = useMealDiaryEntry();
   const { count, data, isLoading } = mealDiaryEntries;
   const [date, setDate] = useState<Date>(null);
-  const [availableDishes, setAvailableDishes] = useState<boolean>(false);
+  const [dishesAvailable, setDishesAvailable] = useState<boolean>(false);
   const entriesAtCurrentDate: MealResponse[] = useMemo(() => {
     return (
       data?.find((entry) => dayjs(date).isSame(entry.date, 'day'))?.meals ?? []
@@ -159,7 +159,8 @@ export const TodayPage = () => {
           meals={entriesAtCurrentDate}
           date={date}
           openModal={openModal}
-          setAvailableDishes={setAvailableDishes}
+          dishesAvailable={dishesAvailable}
+          setDishesAvailable={setDishesAvailable}
         />
         <EntityPageLayout.Loading
           loading={isLoading}
@@ -167,7 +168,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
-            disabled: !availableDishes,
+            disabled: !dishesAvailable,
           }}
         >
           <CardGroup cardMinWidth={270}>
@@ -190,7 +191,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
-            disabled: !availableDishes,
+            disabled: !dishesAvailable,
           }}
         >
           <CardGroup cardMinWidth={130}>
