@@ -13,6 +13,7 @@ export * from './common/IngredientsSelect/IngredientsSelect';
 export * from './common/Spotlight/Spotlight';
 export * from './common/DateControl/DateControl';
 export * from './common/MealSelect/MealSelect';
+export * from './common/OnboardingDialog/OnboardingDialog';
 
 export * from './modals/ConfirmModal/ConfirmModal';
 export * from './modals/FoodQuantityModal/FoodQuantityModal';

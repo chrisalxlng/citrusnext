@@ -60,7 +60,7 @@ const Head = ({ children, title, button }: HeadProps) => (
       {button.href ? (
         <Link href={button.href} passHref>
           <Button
-            component="a"
+            component={button.disabled ? 'button' : 'a'}
             leftIcon={<Plus size={16} />}
             disabled={button.disabled}
           >
@@ -126,7 +126,7 @@ const Body = ({ children, loading, emptyState, title, button }: BodyProps) => (
             button.href ? (
               <Link href={button.href} passHref>
                 <Button
-                  component="a"
+                  component={button.disabled ? 'button' : 'a'}
                   leftIcon={<Plus size={16} />}
                   disabled={button.disabled}
                 >

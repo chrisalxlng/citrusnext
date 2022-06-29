@@ -7,8 +7,15 @@ import {
   FoodQuantityModalType,
   FoodSkeleton,
   MealSelect,
+  OnboardingDialog,
 } from '@citrus/core';
-import { useAuth, useMealDiaryEntry, useModal } from '@citrus/hooks';
+import {
+  useAuth,
+  useDish,
+  useGrocery,
+  useMealDiaryEntry,
+  useModal,
+} from '@citrus/hooks';
 import { EntityPageLayout } from '@citrus/layouts';
 import { MealResponse } from '@citrus/types';
 import { createArray } from '@citrus/util';
@@ -27,10 +34,23 @@ export const TodayPage = () => {
     MealResponse
   >();
   const { currentUser } = useAuth();
+  const { groceries } = useGrocery();
+  const { dishes } = useDish();
   const { mealDiaryEntries, add, update, remove } = useMealDiaryEntry();
   const { count, data, isLoading } = mealDiaryEntries;
   const [date, setDate] = useState<Date>(null);
-  const [dishesAvailable, setDishesAvailable] = useState<boolean>(false);
+  const [uniqueDishesAvailable, setUniqueDishesAvailable] =
+    useState<boolean>(false);
+  const [dialog, openDialog] = useModal();
+  const groceriesAvailable = useMemo(
+    () => groceries.data?.length > 0 ?? false,
+    [groceries.data]
+  );
+  const dishesAvailable = useMemo(
+    () => dishes.data?.length > 0 ?? false,
+    [dishes.data]
+  );
+
   const entriesAtCurrentDate: MealResponse[] = useMemo(() => {
     return (
       data?.find((entry) => dayjs(date).isSame(entry.date, 'day'))?.meals ?? []
@@ -62,6 +82,8 @@ export const TodayPage = () => {
     }
   }, [date]);
 
+  useEffect(() => openDialog({}), []);
+
   const getNutritionInfoValue = (
     key: 'calories' | 'carbohydrates' | 'fats' | 'proteins'
   ): number => {
@@ -88,6 +110,26 @@ export const TodayPage = () => {
 
   return (
     <>
+      <OnboardingDialog
+        dialog={dialog}
+        visible={!groceriesAvailable}
+        title="No groceries yet"
+        description="Add your first grocery to get started."
+        button={{
+          label: 'Get started',
+          href: '/app/groceries/new',
+        }}
+      />
+      <OnboardingDialog
+        dialog={dialog}
+        visible={groceriesAvailable && !dishesAvailable}
+        title="No dishes yet"
+        description="Add your first dish to get started tracking your diet."
+        button={{
+          label: 'Add Dish',
+          href: '/app/dishes/new',
+        }}
+      />
       {foodData && (
         <FoodQuantityModal<MealResponse>
           modal={modal}
@@ -159,8 +201,8 @@ export const TodayPage = () => {
           meals={entriesAtCurrentDate}
           date={date}
           openModal={openModal}
-          dishesAvailable={dishesAvailable}
-          setDishesAvailable={setDishesAvailable}
+          dishesAvailable={uniqueDishesAvailable}
+          setDishesAvailable={setUniqueDishesAvailable}
         />
         <EntityPageLayout.Loading
           loading={isLoading}
@@ -168,7 +210,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
-            disabled: !dishesAvailable,
+            disabled: !uniqueDishesAvailable,
           }}
         >
           <CardGroup cardMinWidth={270}>
@@ -191,7 +233,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
-            disabled: !dishesAvailable,
+            disabled: !uniqueDishesAvailable,
           }}
         >
           <CardGroup cardMinWidth={130}>
