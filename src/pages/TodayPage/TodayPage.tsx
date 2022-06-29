@@ -17,7 +17,7 @@ import { toggleSpotlight } from '@mantine/spotlight';
 import dayjs from 'dayjs';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export const TodayPage = () => {
   const { t } = useTranslation('common');
@@ -30,6 +30,12 @@ export const TodayPage = () => {
   const { mealDiaryEntries, add, update, remove } = useMealDiaryEntry();
   const { count, data, isLoading } = mealDiaryEntries;
   const [date, setDate] = useState<Date>(null);
+  const [availableDishes, setAvailableDishes] = useState<boolean>(false);
+  const entriesAtCurrentDate: MealResponse[] = useMemo(() => {
+    return (
+      data?.find((entry) => dayjs(date).isSame(entry.date, 'day'))?.meals ?? []
+    );
+  }, [date, mealDiaryEntries.data]);
 
   useEffect(() => {
     if (!!date) {
@@ -150,9 +156,10 @@ export const TodayPage = () => {
         ]}
       >
         <MealSelect
-          mealDiaryEntries={mealDiaryEntries.data}
+          meals={entriesAtCurrentDate}
           date={date}
           openModal={openModal}
+          setAvailableDishes={setAvailableDishes}
         />
         <EntityPageLayout.Loading
           loading={isLoading}
@@ -160,6 +167,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
+            disabled: !availableDishes,
           }}
         >
           <CardGroup cardMinWidth={270}>
@@ -182,6 +190,7 @@ export const TodayPage = () => {
           button={{
             label: t('pages.today.meal_diary.new'),
             onClick: toggleSpotlight,
+            disabled: !availableDishes,
           }}
         >
           <CardGroup cardMinWidth={130}>
@@ -229,8 +238,9 @@ export const TodayPage = () => {
                   includeDecimals: true,
                 },
               },
-            ].map((nutrInfo) => (
+            ].map((nutrInfo, index) => (
               <NutritionInfoCard
+                key={index}
                 label={nutrInfo.label}
                 value={nutrInfo.value}
               />

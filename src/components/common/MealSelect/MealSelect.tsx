@@ -1,34 +1,29 @@
 import { useDish } from '@citrus/hooks';
 import { FoodIcon } from '@citrus/icons';
-import { MealDiaryEntryResponse } from '@citrus/types';
+import { MealResponse } from '@citrus/types';
 import { SpotlightAction, useSpotlight } from '@mantine/spotlight';
-import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 
 type MealSelectProps = {
-  mealDiaryEntries: MealDiaryEntryResponse[];
+  meals: MealResponse[];
   date: Date;
   openModal: (any) => void;
+  setAvailableDishes: Dispatch<SetStateAction<boolean>>;
 };
 
 export const MealSelect = ({
-  mealDiaryEntries,
+  meals,
   date,
   openModal,
+  setAvailableDishes,
 }: MealSelectProps) => {
   const { opened, registerActions } = useSpotlight();
   const { dishes } = useDish();
 
   useEffect(() => {
-    if (!mealDiaryEntries) return;
+    if (!meals) return;
     const mealActions: SpotlightAction[] = dishes.data
-      ?.filter(
-        (dish) =>
-          !mealDiaryEntries
-            .find((entry) => dayjs(entry.date).isSame(date, 'date'))
-            ?.meals.map((meal) => meal.dish.id)
-            .includes(dish.id)
-      )
+      ?.filter((dish) => !meals.map((meal) => meal.dish.id).includes(dish.id))
       .map((dish) => ({
         id: dish.id,
         title: dish.title,
@@ -43,6 +38,14 @@ export const MealSelect = ({
       }));
     setTimeout(() => registerActions(mealActions), 100);
   }, [dishes.isFetched, opened]);
+
+  useEffect(() => {
+    setAvailableDishes(
+      !!dishes.data?.filter(
+        (dish) => !meals.map((meal) => meal.dish.id).includes(dish.id)
+      ).length
+    );
+  }, [meals, date]);
 
   return null;
 };

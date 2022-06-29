@@ -20,6 +20,7 @@ type LoadingProps = {
     label: string;
     href?: string;
     onClick?: () => void;
+    disabled?: boolean;
   };
 };
 
@@ -37,6 +38,7 @@ type BodyProps = {
     label: string;
     href?: string;
     onClick?: () => void;
+    disabled?: boolean;
   };
 };
 
@@ -47,6 +49,7 @@ type HeadProps = {
     label: string;
     href?: string;
     onClick?: () => void;
+    disabled?: boolean;
   };
 };
 
@@ -56,12 +59,20 @@ const Head = ({ children, title, button }: HeadProps) => (
       {typeof title === 'string' ? <Title order={1}>{title}</Title> : title}
       {button.href ? (
         <Link href={button.href} passHref>
-          <Button component="a" leftIcon={<Plus size={16} />}>
+          <Button
+            component="a"
+            leftIcon={<Plus size={16} />}
+            disabled={button.disabled}
+          >
             {button.label}
           </Button>
         </Link>
       ) : (
-        <Button onClick={button.onClick} leftIcon={<Plus size={16} />}>
+        <Button
+          onClick={button.onClick}
+          leftIcon={<Plus size={16} />}
+          disabled={button.disabled}
+        >
           {button.label}
         </Button>
       )}
@@ -114,12 +125,20 @@ const Body = ({ children, loading, emptyState, title, button }: BodyProps) => (
           button={
             button.href ? (
               <Link href={button.href} passHref>
-                <Button component="a" leftIcon={<Plus size={16} />}>
+                <Button
+                  component="a"
+                  leftIcon={<Plus size={16} />}
+                  disabled={button.disabled}
+                >
                   {button.label}
                 </Button>
               </Link>
             ) : (
-              <Button onClick={button.onClick} leftIcon={<Plus size={16} />}>
+              <Button
+                onClick={button.onClick}
+                leftIcon={<Plus size={16} />}
+                disabled={button.disabled}
+              >
                 {button.label}
               </Button>
             )

@@ -14,7 +14,7 @@ import {
   useMantineColorScheme,
 } from '@mantine/core';
 import { SpotlightAction, useSpotlight } from '@mantine/spotlight';
-import { useEffect, MouseEvent } from 'react';
+import { useEffect, MouseEvent, useState } from 'react';
 import { Plus, Trash } from 'tabler-icons-react';
 import { EmptyState } from '@citrus/core';
 import { useTranslation } from 'next-i18next';
@@ -37,6 +37,7 @@ export const IngredientsSelect = ({
     FoodQuantityModalType,
     IngredientResponse
   >();
+  const [groceriesAvailable, setGroceriesAvailable] = useState<boolean>(false);
   const isDarkTheme = colorScheme === 'dark';
 
   const getCalorieLabel = (amount: string) =>
@@ -49,12 +50,12 @@ export const IngredientsSelect = ({
 
   useEffect(() => {
     if (!groceries.data) return;
-    const ingredientActions: SpotlightAction[] = groceries.data
-      ?.filter(
-        (grocery) =>
-          !ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
-      )
-      .map((grocery) => ({
+    const availableGroceries = groceries.data?.filter(
+      (grocery) =>
+        !ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
+    );
+    const ingredientActions: SpotlightAction[] = availableGroceries.map(
+      (grocery) => ({
         id: grocery.id,
         title: grocery.title,
         description: `${grocery.portionSize} ${grocery.unit} • ${grocery.calories} kcal`,
@@ -65,9 +66,19 @@ export const IngredientsSelect = ({
           });
         },
         icon: <FoodIcon id={grocery.iconId} size={18} />,
-      }));
+      })
+    );
     setTimeout(() => registerActions(ingredientActions), 100);
   }, [groceries.isFetched, opened]);
+
+  useEffect(() => {
+    setGroceriesAvailable(
+      !groceries.data?.filter(
+        (grocery) =>
+          !ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
+      ).length
+    );
+  }, [ingredients]);
 
   const AddIngredientButton = (
     <Button
@@ -75,6 +86,7 @@ export const IngredientsSelect = ({
       leftIcon={<Plus size={16} />}
       fullWidth
       onClick={toggleSpotlight}
+      disabled={groceriesAvailable}
     >
       {t('pages.dish.form.add_ingredient')}
     </Button>
