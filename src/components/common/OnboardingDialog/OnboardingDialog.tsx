@@ -1,5 +1,6 @@
 import { ModalObject } from '@citrus/hooks';
 import { Button, Dialog, Group, Text } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import Link from 'next/link';
 
 type OnboardingDialogProps = {
@@ -20,12 +21,14 @@ export const OnboardingDialog = ({
   description,
   button,
 }: OnboardingDialogProps) => {
+  const largerThanBreakpoint = useMediaQuery(`(min-width: 500px)`);
+
   return (
     <Dialog
       opened={visible && dialog.opened}
       withCloseButton
       onClose={dialog.close}
-      size="lg"
+      size={largerThanBreakpoint ? 'lg' : 'md'}
       radius="md"
     >
       <Text size="md" style={{ marginBottom: 10 }} weight={500}>
