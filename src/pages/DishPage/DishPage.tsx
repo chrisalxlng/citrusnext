@@ -1,5 +1,5 @@
 import { Card, IconSelect, SplitButton } from '@citrus/core';
-import { useAuth, useDish } from '@citrus/hooks';
+import { useAuth, useDish, useMealDiaryEntry } from '@citrus/hooks';
 import { DishResponse, DishForm, Unit } from '@citrus/types';
 import { FoodIcon } from '@citrus/icons';
 import { AppCloseHeader, PageLayout } from '@citrus/layouts';
@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next';
 import { Trash } from 'tabler-icons-react';
 import { createArray } from '@citrus/util';
 import { IngredientsSelect } from '@citrus/core';
+import { useMemo } from 'react';
 
 type DishPageProps = {
   dish?: DishResponse;
@@ -32,7 +33,14 @@ export const DishPage = ({ dish }: DishPageProps) => {
     : t('pages.dish.title.update');
   const { currentUser } = useAuth();
   const { add, update, remove } = useDish();
+  const { mealDiaryEntries } = useMealDiaryEntry();
   const focusTrapRef = useFocusTrap();
+  const isDependency = useMemo(() => {
+    if (isCreatePage || !mealDiaryEntries.data) return true;
+    return mealDiaryEntries.data.some((entry) =>
+      entry.meals.map((meal) => meal.dish.id).includes(dish.id)
+    );
+  }, [mealDiaryEntries.data]);
 
   const form = useForm<DishForm>({
     initialValues: {
@@ -84,7 +92,8 @@ export const DishPage = ({ dish }: DishPageProps) => {
             submitButton={
               <SplitButton
                 options={
-                  !isCreatePage && [
+                  !isCreatePage &&
+                  !isDependency && [
                     {
                       label: t('pages.dish.actions.delete'),
                       color: 'red',

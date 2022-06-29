@@ -1,5 +1,5 @@
 import { Card, IconSelect, SplitButton } from '@citrus/core';
-import { useAuth, useGrocery } from '@citrus/hooks';
+import { useAuth, useDish, useGrocery } from '@citrus/hooks';
 import { Unit, UpdateGrocery } from '@citrus/types';
 import { FoodIcon } from '@citrus/icons';
 import { AppCloseHeader, PageLayout } from '@citrus/layouts';
@@ -17,6 +17,7 @@ import { useFocusTrap, useForm } from '@mantine/hooks';
 import { useTranslation } from 'next-i18next';
 import { Trash } from 'tabler-icons-react';
 import { createArray } from '@citrus/util';
+import { useMemo } from 'react';
 
 const CALORIES_CARBOHYDRATES_FACTOR = 4;
 const CALORIES_FATS_FACTOR = 9;
@@ -35,7 +36,14 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
     : t('pages.grocery.title.update');
   const { currentUser } = useAuth();
   const { add, update, remove } = useGrocery();
+  const { dishes } = useDish();
   const focusTrapRef = useFocusTrap();
+  const isDependency = useMemo(() => {
+    if (isCreatePage || !dishes.data) return true;
+    return dishes.data.some((dish) =>
+      dish.ingredients.map((ing) => ing.grocery.id).includes(grocery.id)
+    );
+  }, [dishes.data]);
 
   const form = useForm({
     initialValues: {
@@ -78,7 +86,8 @@ export const GroceryPage = ({ grocery }: GroceryPageProps) => {
             submitButton={
               <SplitButton
                 options={
-                  !isCreatePage && [
+                  !isCreatePage &&
+                  !isDependency && [
                     {
                       label: t('pages.grocery.actions.delete'),
                       color: 'red',
